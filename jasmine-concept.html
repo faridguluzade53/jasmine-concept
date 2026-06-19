@@ -533,7 +533,7 @@
           <div class="card-frame">
             <span class="badge" data-i18n="badge.new">New Arrival</span>
             <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=800&q=80" alt="Glass-finish lip treatment" loading="lazy"/>
-            <div class="card-reveal"><span class="view" data-i18n="card.order">Order on WhatsApp →</span></div>
+            <div class="card-reveal"><span class="view" data-i18n="card.view">View piece →</span></div>
           </div>
           <div class="card-meta">
             <div>
@@ -548,7 +548,7 @@
           <div class="card-frame">
             <span class="badge" data-i18n="badge.best">Best Seller</span>
             <img src="https://images.unsplash.com/photo-1631214540242-3cd8c4b0b3c8?auto=format&fit=crop&w=800&q=80" alt="Sculpting blush duo" loading="lazy"/>
-            <div class="card-reveal"><span class="view" data-i18n="card.order">Order on WhatsApp →</span></div>
+            <div class="card-reveal"><span class="view" data-i18n="card.view">View piece →</span></div>
           </div>
           <div class="card-meta">
             <div>
@@ -563,7 +563,7 @@
           <div class="card-frame">
             <span class="badge" data-i18n="badge.new">New Arrival</span>
             <img src="https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=800&q=80" alt="Quilted leather mini bag" loading="lazy"/>
-            <div class="card-reveal"><span class="view" data-i18n="card.order">Order on WhatsApp →</span></div>
+            <div class="card-reveal"><span class="view" data-i18n="card.view">View piece →</span></div>
           </div>
           <div class="card-meta">
             <div>
@@ -653,7 +653,7 @@
       'badge.new':'Yeni gəldi',
       'badge.best':'Ən çox satılan',
       'badge.sold':'Bitib',
-      'card.order':'WhatsApp ilə sifariş →',
+      'card.view':'Məhsula bax →',
       'card.waitlist':'Növbəyə yazıl →',
       'statement.quote':'Biz hər şeyi saxlamırıq.<br/>Yalnız <span class="script">dəyərli</span> olanları seçirik.',
       'statement.by':'Jasmine Concept — Seçilmiş Eksklüzivlər',
@@ -677,7 +677,7 @@
       'badge.new':'New Arrival',
       'badge.best':'Best Seller',
       'badge.sold':'Sold Out',
-      'card.order':'Order on WhatsApp →',
+      'card.view':'View piece →',
       'card.waitlist':'Join waitlist →',
       'statement.quote':"We don't stock everything.<br/>We stock the things worth <span class=\"script\">keeping.</span>",
       'statement.by':'Jasmine Concept — Curated Exclusives',
@@ -690,16 +690,8 @@
 
   /* WhatsApp message templates per language */
   var MSG = {
-    az:{
-      order:function(n,p){ return 'Salam! "'+n+'" ('+p+') sifariş etmək istəyirəm. — '+BRAND; },
-      waitlist:function(n){ return 'Salam! "'+n+'" yenidən mövcud olanda mənə xəbər verə bilərsinizmi? — '+BRAND; },
-      general:'Salam! Jasmine Concept haqqında məlumat almaq istəyirəm.'
-    },
-    en:{
-      order:function(n,p){ return 'Hi! I would like to order "'+n+'" ('+p+'). — '+BRAND; },
-      waitlist:function(n){ return 'Hi! Please let me know when "'+n+'" is back in stock. — '+BRAND; },
-      general:'Hi! I would like to know more about Jasmine Concept.'
-    }
+    az:{ general:'Salam! Jasmine Concept haqqında məlumat almaq istəyirəm.' },
+    en:{ general:'Hi! I would like to know more about Jasmine Concept.' }
   };
 
   function waLink(text){ return 'https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(text); }
@@ -732,19 +724,15 @@
     b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); });
   });
 
-  /* ── per-product WhatsApp ordering ── */
+  /* ── product cards — placeholder until individual product pages exist ──
+     TODO: when product pages are built, point each card at its page, e.g.
+       card.addEventListener('click', function(){ location.href = card.dataset.href; });
+     For now "View piece" is intentionally inert. */
   document.querySelectorAll('.card').forEach(function(card){
-    function order(){
-      var name  = (card.querySelector('.card-name')||{}).textContent || '';
-      var price = (card.querySelector('.card-price')||{}).textContent || '';
-      name = name.trim(); price = price.trim();
-      var sold = card.classList.contains('is-sold');
-      var text = sold ? MSG[currentLang].waitlist(name) : MSG[currentLang].order(name, price);
-      window.open(waLink(text), '_blank', 'noopener');
-    }
-    card.addEventListener('click', order);
+    function openPiece(){ /* no-op for now — product pages coming soon */ }
+    card.addEventListener('click', openPiece);
     card.addEventListener('keydown', function(e){
-      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); order(); }
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openPiece(); }
     });
   });
 
