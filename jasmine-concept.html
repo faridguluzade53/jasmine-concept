@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jasmine Concept — Curated Exclusives</title>
+
+<!-- SEO + WhatsApp/social share preview -->
+<meta name="description" content="Jasmine Concept — a quietly edited collection of beauty & fashion exclusives, curated in Baku. Order directly on WhatsApp." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Jasmine Concept — Curated Exclusives" />
+<meta property="og:description" content="Beauty & fashion exclusives you can't find locally. Curated in Baku — order on WhatsApp." />
+<meta property="og:locale" content="az_AZ" />
+<meta property="og:image" content="https://images.unsplash.com/photo-1564836949415-da93f0419a62?auto=format&fit=crop&w=1200&q=80" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.92em' font-size='86' fill='%23BFBFBC'>%E2%9C%A6</text></svg>" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!-- Fraunces: editorial serif headings · Jost: clean sans UI · Ephesis: script accent -->
+<link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    /* palette — cool greys + clean whites, never pure black/white */
+    --paper:   #F6F6F4;   /* soft off-white */
+    --mist:    #ECECEA;   /* faint grey wash */
+    --silver:  #E4E4E2;   /* cool light grey */
+    --stone:   #BFBFBC;   /* mid grey */
+    --ink:     #26262A;   /* deep charcoal text */
+    --ink-soft:#5A5A60;   /* muted text */
+    /* platinum sheen accent */
+    --sheen-1: rgba(255,255,255,0);
+    --sheen-2: rgba(255,255,255,0.85);
+
+    --maxw: 1320px;
+    --ease:  cubic-bezier(.16,.84,.32,1);   /* long slow ease-out */
+    --ease-soft: cubic-bezier(.4,0,.2,1);
+
+    --space: clamp(5rem, 11vw, 11rem);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Jost', system-ui, sans-serif;
+    font-weight:300;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+
+  ::selection{ background:var(--ink); color:var(--paper); }
+
+  /* small-caps editorial labels */
+  .label{
+    font-family:'Jost', sans-serif;
+    font-weight:400;
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.34em;
+    color:var(--ink-soft);
+  }
+
+  .serif{ font-family:'Fraunces', Georgia, serif; font-weight:340; }
+  .script{ font-family:'Ephesis', cursive; font-weight:400; font-style:normal; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* ───────────────────────── LOADER ───────────────────────── */
+  #loader{
+    position:fixed; inset:0; z-index:1000;
+    background:var(--paper);
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:1.4rem;
+    transition:opacity 1s var(--ease), visibility 1s var(--ease);
+  }
+  #loader.done{ opacity:0; visibility:hidden; }
+
+  .loader-mark{
+    display:flex; align-items:center; gap:.5rem;
+    font-family:'Fraunces', serif; font-weight:340;
+    font-size:clamp(2.2rem,5vw,3.4rem);
+    color:var(--ink);
+    opacity:0;
+    animation:loaderIn 1.1s var(--ease) .15s forwards;
+  }
+  .loader-mark .spark{
+    display:inline-block;
+    font-size:.5em;
+    color:var(--stone);
+    transform:scale(0) rotate(-40deg);
+    animation:sparkPop 1s var(--ease) .55s forwards;
+  }
+  .loader-line{
+    width:0; height:1px; background:var(--stone);
+    animation:lineGrow 1.3s var(--ease) .7s forwards;
+  }
+  @keyframes loaderIn{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+  @keyframes sparkPop{ to{ transform:scale(1) rotate(0);} }
+  @keyframes lineGrow{ to{ width:min(260px,42vw);} }
+
+  /* twinkle used by every ✦ on the page */
+  @keyframes twinkle{
+    0%,100%{ opacity:.55; transform:scale(.92) rotate(0); }
+    50%{ opacity:1; transform:scale(1.12) rotate(18deg); }
+  }
+
+  /* ───────────────────────── HEADER ───────────────────────── */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:1.6rem clamp(1.5rem,5vw,4rem);
+    display:flex; align-items:center; justify-content:space-between;
+    transition:background .6s var(--ease),
+               padding .5s var(--ease), box-shadow .6s var(--ease);
+  }
+  header.scrolled{
+    background:rgba(246,246,244,.82);
+    backdrop-filter:blur(10px) saturate(1.05);
+    -webkit-backdrop-filter:blur(10px) saturate(1.05);
+    padding-top:1.05rem; padding-bottom:1.05rem;
+    box-shadow:0 1px 0 rgba(38,38,42,.06);
+  }
+
+  .wordmark{
+    font-family:'Fraunces', serif; font-weight:360;
+    font-size:1.35rem; letter-spacing:.01em;
+    display:flex; align-items:baseline; gap:.34em;
+    color:var(--ink);
+    transition:color .65s var(--ease);
+  }
+  .wordmark .spark{ font-size:.62em; color:var(--stone); display:inline-block;
+    animation:twinkle 5s var(--ease-soft) infinite;
+    transition:color .65s var(--ease); }
+
+  nav{ display:flex; align-items:center; gap:clamp(1.4rem,3vw,2.8rem); }
+  .nav-links{ display:flex; gap:clamp(1.4rem,3vw,2.6rem); }
+  .nav-links a{
+    font-size:.82rem; letter-spacing:.12em; text-transform:uppercase;
+    font-weight:400; color:var(--ink); position:relative; padding:.2rem 0;
+    transition:color .65s var(--ease);
+  }
+  .nav-links a::after{
+    content:''; position:absolute; left:0; bottom:0; height:1px; width:0;
+    background:var(--ink); transition:width .45s var(--ease), background-color .65s var(--ease);
+  }
+  .nav-links a:hover::after{ width:100%; }
+
+  .nav-utils{ display:flex; align-items:center; gap:1.4rem; }
+  .lang-toggle{
+    font-size:.74rem; letter-spacing:.18em; color:var(--ink-soft);
+    display:flex; gap:.1rem; user-select:none;
+  }
+  .lang-toggle button{
+    background:none; border:none; font:inherit; cursor:pointer;
+    color:var(--stone); letter-spacing:inherit; padding:.1rem .15rem;
+    transition:color .65s var(--ease);
+  }
+  .lang-toggle button.active{ color:var(--ink); }
+  .lang-toggle .sep{ color:var(--stone); transition:color .65s var(--ease); }
+
+  .cart{
+    position:relative; cursor:pointer; color:var(--ink);
+    transition:transform .4s var(--ease), color .65s var(--ease);
+  }
+  .cart:hover{ transform:translateY(-2px); }
+  .cart svg{ display:block; width:20px; height:20px; }
+  .cart .count{
+    position:absolute; top:-6px; right:-8px;
+    font-size:.58rem; letter-spacing:.05em;
+    background:var(--ink); color:var(--paper);
+    width:15px; height:15px; border-radius:50%;
+    display:grid; place-items:center;
+    transition:background .65s var(--ease), color .65s var(--ease);
+  }
+
+  @media (max-width:780px){ .nav-links{ display:none; } }
+
+  /* ───────────────────────── HERO ───────────────────────── */
+  .hero{
+    position:relative; min-height:100svh;
+    display:flex; align-items:center;
+    padding:0 clamp(1.5rem,5vw,4rem);
+    overflow:hidden;
+  }
+  .hero-bg{
+    position:absolute; inset:0; z-index:-2;
+    background:#D4D1CB; /* premium warm mid-light grey */
+  }
+  /* Full-color editorial flat-lay on a light surface.
+     Gradient mask: left = transparent (text zone clean), right = fully revealed in natural color. */
+  .hero-img{
+    position:absolute; inset:-6%; z-index:-1;
+    background-image:
+      url('https://images.unsplash.com/photo-1564836949415-da93f0419a62?auto=format&fit=crop&w=1900&q=80');
+    background-size:cover; background-position:right 30%;
+    opacity:.96;
+    backface-visibility:hidden;
+    -webkit-mask-image:linear-gradient(to right,
+      transparent 0%,
+      transparent 18%,
+      rgba(0,0,0,.15) 32%,
+      rgba(0,0,0,.75) 50%,
+      black 64%,
+      black 100%);
+    mask-image:linear-gradient(to right,
+      transparent 0%,
+      transparent 18%,
+      rgba(0,0,0,.15) 32%,
+      rgba(0,0,0,.75) 50%,
+      black 64%,
+      black 100%);
+    will-change:transform;
+    animation:ken 28s ease-in-out infinite alternate;
+  }
+  /* Left scrim — solid grey through the headline zone, fades before products */
+  .hero-scrim{
+    position:absolute; inset:0; z-index:0; pointer-events:none;
+    background: linear-gradient(to right,
+      #D4D1CB 0%,
+      #D4D1CB 20%,
+      rgba(212,209,203,.82) 34%,
+      rgba(212,209,203,.22) 48%,
+      transparent 60%
+    );
+  }
+  @keyframes ken{
+    from{ transform:scale(1.04) translate(0,0); }
+    to  { transform:scale(1.14) translate(-1.6%,-2.2%); }
+  }
+
+  .hero-inner{ position:relative; z-index:1; max-width:var(--maxw); width:100%; margin:0 auto; }
+  .hero-copy{ max-width:50rem; }
+
+  /* staggered entrance — set by JS after loader */
+  .rise{ opacity:0; transform:translateY(26px); }
+  body.loaded .rise{
+    opacity:1; transform:none;
+    transition:opacity 1.1s var(--ease), transform 1.1s var(--ease);
+  }
+  body.loaded .rise.d1{ transition-delay:.15s; }
+  body.loaded .rise.d2{ transition-delay:.32s; }
+  body.loaded .rise.d3{ transition-delay:.50s; }
+  body.loaded .rise.d4{ transition-delay:.70s; }
+  body.loaded .rise.d5{ transition-delay:.92s; }
+
+  .hero .label{
+    margin-bottom:1.8rem; display:flex; align-items:center; gap:.7rem;
+    color:var(--ink-soft);
+  }
+  .hero .label .spark{ color:var(--stone); animation:twinkle 5s var(--ease-soft) infinite; }
+
+  h1.hero-title{
+    font-family:'Fraunces', serif; font-weight:320;
+    font-size:clamp(3rem, 8.5vw, 7.4rem);
+    line-height:.98; letter-spacing:-.015em;
+    color:var(--ink);
+  }
+  h1.hero-title .script{
+    font-size:1.36em; line-height:.7; font-weight:400;
+    /* platinum shimmer on dark charcoal — clearly visible light band passing through */
+    background:linear-gradient(105deg,
+        var(--ink) 0%, var(--ink) 34%,
+        rgba(155,151,145,.75) 44%, rgba(224,220,214,1) 50%, rgba(155,151,145,.75) 56%,
+        var(--ink) 66%, var(--ink) 100%);
+    background-size:280% 100%;
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:sheen 7.5s var(--ease-soft) 1.6s infinite;
+  }
+  @keyframes sheen{
+    0%   { background-position:120% 0; }
+    24%  { background-position:-40% 0; }
+    100% { background-position:-40% 0; }
+  }
+
+  .hero-sub{
+    margin-top:2rem; max-width:34rem;
+    font-size:1.06rem; color:var(--ink-soft); font-weight:300;
+    line-height:1.75;
+  }
+
+  /* refined button — default dark version (used off-hero) */
+  .btn{
+    --pad:1.15rem 2.4rem;
+    display:inline-flex; align-items:center; gap:.9rem;
+    margin-top:2.8rem; padding:var(--pad);
+    font-size:.8rem; letter-spacing:.2em; text-transform:uppercase;
+    font-weight:400; color:var(--ink);
+    border:1px solid var(--ink);
+    background:transparent; cursor:pointer;
+    position:relative; overflow:hidden;
+    transition:color .55s var(--ease);
+  }
+  .btn span{ position:relative; z-index:1; transition:color .55s var(--ease); }
+  .btn .arrow{ position:relative; z-index:1; transition:transform .55s var(--ease); }
+  .btn::before{
+    content:''; position:absolute; inset:0; z-index:0;
+    background:var(--ink);
+    transform:translateY(101%);
+    transition:transform .6s var(--ease);
+  }
+  .btn:hover::before{ transform:translateY(0); }
+  .btn:hover span,.btn:hover .arrow{ color:var(--paper); }
+  .btn:hover .arrow{ transform:translateX(5px); }
+
+  .scroll-cue{
+    position:absolute; z-index:1; bottom:2.4rem; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:.8rem;
+    color:var(--ink-soft);
+  }
+  .scroll-cue .label{ font-size:.6rem; letter-spacing:.3em; color:inherit; }
+  .scroll-cue .bar{ width:1px; height:46px; background:var(--stone); position:relative; overflow:hidden; }
+  .scroll-cue .bar::after{
+    content:''; position:absolute; top:-50%; left:0; width:100%; height:50%;
+    background:var(--ink); animation:cue 2.4s var(--ease-soft) infinite;
+  }
+  @keyframes cue{ 0%{transform:translateY(-100%);} 60%,100%{transform:translateY(300%);} }
+
+  /* ───────────────────────── SECTION SHELL + REVEAL ───────────────────────── */
+  section{ padding:var(--space) clamp(1.5rem,5vw,4rem); }
+  .wrap{ max-width:var(--maxw); margin:0 auto; }
+
+  .reveal{ opacity:0; transform:translateY(34px); }
+  .reveal.in{
+    opacity:1; transform:none;
+    transition:opacity 1.15s var(--ease), transform 1.15s var(--ease);
+  }
+
+  .sec-head{ display:flex; align-items:flex-end; justify-content:space-between;
+    gap:2rem; margin-bottom:clamp(2.6rem,5vw,4.4rem); flex-wrap:wrap; }
+  .sec-head h2{
+    font-family:'Fraunces', serif; font-weight:330;
+    font-size:clamp(2rem,4.4vw,3.4rem); line-height:1.05;
+    letter-spacing:-.01em; max-width:18ch;
+  }
+  .sec-head h2 .script{ font-size:1.3em; line-height:.6; }
+  .sec-head p{ color:var(--ink-soft); max-width:26ch; font-size:.95rem; }
+
+  /* ───────────────────────── PRODUCT GRID ───────────────────────── */
+  .grid{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:clamp(1.4rem,2.6vw,2.6rem);
+  }
+  @media (max-width:1040px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
+
+  .card{ cursor:pointer; }
+  .card:focus-visible{ outline:1px solid var(--ink); outline-offset:6px; }
+  .card-frame{
+    position:relative; overflow:hidden; aspect-ratio:3/4;
+    background:var(--silver);
+  }
+  .card-frame img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    filter:grayscale(.12);
+    transform:scale(1.01);
+    transition:transform 1.1s var(--ease), filter 1.1s var(--ease);
+  }
+  .card:hover .card-frame img{ transform:scale(1.09); filter:grayscale(0); will-change:transform; }
+
+  .badge{
+    position:absolute; top:1rem; left:1rem; z-index:2;
+    font-family:'Jost',sans-serif; font-weight:400;
+    font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+    padding:.5rem .8rem; color:var(--ink);
+    background:rgba(246,246,244,.82);
+    backdrop-filter:blur(6px);
+  }
+  .badge.sold{ color:var(--paper); background:rgba(38,38,42,.78); }
+
+  /* refined detail reveal on hover */
+  .card-reveal{
+    position:absolute; left:0; right:0; bottom:0; z-index:2;
+    padding:1.4rem; text-align:center;
+    background:linear-gradient(to top, rgba(246,246,244,.94), rgba(246,246,244,0));
+    transform:translateY(115%);
+    transition:transform .55s var(--ease);
+  }
+  .card:hover .card-reveal,.card:focus-visible .card-reveal{ transform:translateY(0); }
+  .card-reveal .view{
+    font-size:.68rem; letter-spacing:.24em; text-transform:uppercase;
+    display:inline-flex; align-items:center; gap:.5rem; color:var(--ink);
+    border-bottom:1px solid var(--ink); padding-bottom:.3rem;
+  }
+
+  .card-meta{ display:flex; align-items:baseline; justify-content:space-between;
+    gap:1rem; margin-top:1.1rem; }
+  .card-name{ font-family:'Fraunces',serif; font-weight:360; font-size:1.08rem; }
+  .card-house{ font-size:.7rem; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink-soft); margin-top:.25rem; }
+  .card-price{ font-size:.92rem; color:var(--ink); white-space:nowrap; letter-spacing:.02em; }
+  .card.is-sold .card-name,.card.is-sold .card-price{ color:var(--stone); }
+
+  /* ───────────────────────── STATEMENT ───────────────────────── */
+  .statement{ text-align:center; }
+  .statement .wrap{ max-width:62rem; }
+  .statement .spark-row{ font-size:1.1rem; color:var(--stone); letter-spacing:1rem;
+    margin-bottom:2.4rem; padding-left:1rem; }
+  .statement .spark-row span{ display:inline-block; animation:twinkle 5s var(--ease-soft) infinite; }
+  .statement .spark-row span:nth-child(2){ animation-delay:.6s; }
+  .statement .spark-row span:nth-child(3){ animation-delay:1.2s; }
+  .statement blockquote{
+    font-family:'Fraunces',serif; font-weight:300;
+    font-size:clamp(1.7rem,4.2vw,3.1rem); line-height:1.25;
+    letter-spacing:-.01em; color:var(--ink);
+  }
+  .statement blockquote .script{ font-size:1.25em; }
+  .statement .by{ margin-top:2.6rem; }
+
+  .statement{ background:
+    linear-gradient(180deg, var(--paper), var(--mist) 50%, var(--paper)); }
+
+  /* ───────────────────────── FOOTER ───────────────────────── */
+  footer{
+    padding:clamp(4rem,8vw,7rem) clamp(1.5rem,5vw,4rem) 3rem;
+    border-top:1px solid var(--silver);
+  }
+  .foot-grid{ max-width:var(--maxw); margin:0 auto;
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:2.5rem; flex-wrap:wrap; }
+  .foot-mark{ font-family:'Fraunces',serif; font-weight:340;
+    font-size:clamp(2.4rem,7vw,5rem); line-height:.9;
+    display:flex; align-items:baseline; gap:.3em; }
+  .foot-mark .spark{ font-size:.32em; color:var(--stone);
+    animation:twinkle 5s var(--ease-soft) infinite; }
+  .foot-right{ text-align:right; }
+  .wa{
+    display:inline-flex; align-items:center; gap:.7rem;
+    font-size:.82rem; letter-spacing:.14em; text-transform:uppercase;
+    border-bottom:1px solid var(--ink); padding-bottom:.4rem;
+    transition:gap .4s var(--ease), opacity .4s var(--ease);
+  }
+  .wa:hover{ gap:1.1rem; opacity:.7; }
+  .wa svg{ width:17px; height:17px; }
+  .foot-note{ max-width:var(--maxw); margin:3.5rem auto 0;
+    display:flex; justify-content:space-between; gap:1.5rem; flex-wrap:wrap;
+    font-size:.72rem; letter-spacing:.1em; color:var(--stone);
+    text-transform:uppercase; }
+
+  /* ───────────────────────── REDUCED MOTION ───────────────────────── */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+      animation:none !important;
+      transition-duration:.001ms !important;
+    }
+    .rise,.reveal{ opacity:1 !important; transform:none !important; }
+    .hero-img{ transform:scale(1.06); }
+    h1.hero-title .script{ -webkit-text-fill-color:var(--ink); background:none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-mark">
+      <span>Jasmine</span><span class="spark">✦</span><span>Concept</span>
+    </div>
+    <div class="loader-line"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header id="header">
+    <a href="#home" class="wordmark" aria-label="Jasmine Concept home">
+      Jasmine <span class="spark">✦</span> Concept
+    </a>
+    <nav>
+      <div class="nav-links">
+        <a href="#home" data-i18n="nav.home">Home</a>
+        <a href="#shop" data-i18n="nav.shop">Shop</a>
+        <a href="#shop" data-i18n="nav.fav">Favourites</a>
+        <a href="#contact" data-i18n="nav.contact">Contact</a>
+      </div>
+      <div class="nav-utils">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button class="active" data-lang="az">AZ</button>
+          <span class="sep">/</span>
+          <button data-lang="en">EN</button>
+        </div>
+        <a href="#contact" class="cart" aria-label="Cart, 2 items">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+            <path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/>
+          </svg>
+          <span class="count">2</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-img"></div>
+    <div class="hero-scrim"></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="label rise d1" data-i18n="hero.label"><span class="spark">✦</span> Curated in Baku · Worldwide exclusives</p>
+        <h1 class="hero-title rise d2" data-i18n="hero.title">
+          Say hello to your<br/>new <span class="script">favourites</span>
+        </h1>
+        <p class="hero-sub rise d3" data-i18n="hero.sub">
+          An online space for the exclusives you can't find locally — a quietly
+          edited collection of beauty &amp; fashion, chosen for taste over noise.
+        </p>
+        <a href="#shop" class="btn rise d4">
+          <span data-i18n="hero.cta">Explore the edit</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+    <div class="scroll-cue rise d5">
+      <span class="label" data-i18n="hero.scroll">Scroll</span>
+      <span class="bar"></span>
+    </div>
+  </section>
+
+  <!-- PRODUCT GRID -->
+  <section id="shop">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 data-i18n="shop.title">Pretty things, <span class="script">inside</span></h2>
+        <p data-i18n="shop.sub">A small, deliberate edit. Restocked rarely — taken seriously.</p>
+      </div>
+
+      <div class="grid">
+        <article class="card reveal" style="--i:0" role="button" tabindex="0">
+          <div class="card-frame">
+            <span class="badge" data-i18n="badge.new">New Arrival</span>
+            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=800&q=80" alt="Glass-finish lip treatment" loading="lazy"/>
+            <div class="card-reveal"><span class="view" data-i18n="card.order">Order on WhatsApp →</span></div>
+          </div>
+          <div class="card-meta">
+            <div>
+              <div class="card-name">Peptide Lip Glaze</div>
+              <div class="card-house">Rhode</div>
+            </div>
+            <div class="card-price">68 ₼</div>
+          </div>
+        </article>
+
+        <article class="card reveal" style="--i:1" role="button" tabindex="0">
+          <div class="card-frame">
+            <span class="badge" data-i18n="badge.best">Best Seller</span>
+            <img src="https://images.unsplash.com/photo-1631214540242-3cd8c4b0b3c8?auto=format&fit=crop&w=800&q=80" alt="Sculpting blush duo" loading="lazy"/>
+            <div class="card-reveal"><span class="view" data-i18n="card.order">Order on WhatsApp →</span></div>
+          </div>
+          <div class="card-meta">
+            <div>
+              <div class="card-name">Sculpting Blush</div>
+              <div class="card-house">Refy</div>
+            </div>
+            <div class="card-price">94 ₼</div>
+          </div>
+        </article>
+
+        <article class="card reveal" style="--i:2" role="button" tabindex="0">
+          <div class="card-frame">
+            <span class="badge" data-i18n="badge.new">New Arrival</span>
+            <img src="https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=800&q=80" alt="Quilted leather mini bag" loading="lazy"/>
+            <div class="card-reveal"><span class="view" data-i18n="card.order">Order on WhatsApp →</span></div>
+          </div>
+          <div class="card-meta">
+            <div>
+              <div class="card-name">Wander Mini Bag</div>
+              <div class="card-house">Miu Miu</div>
+            </div>
+            <div class="card-price">2 480 ₼</div>
+          </div>
+        </article>
+
+        <article class="card reveal is-sold" style="--i:3" role="button" tabindex="0">
+          <div class="card-frame">
+            <span class="badge sold" data-i18n="badge.sold">Sold Out</span>
+            <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80" alt="Eau de parfum bottle" loading="lazy"/>
+            <div class="card-reveal"><span class="view" data-i18n="card.waitlist">Join waitlist →</span></div>
+          </div>
+          <div class="card-meta">
+            <div>
+              <div class="card-name">Santal Veil EDP</div>
+              <div class="card-house">Le Labo</div>
+            </div>
+            <div class="card-price">340 ₼</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATEMENT -->
+  <section class="statement">
+    <div class="wrap reveal">
+      <div class="spark-row"><span>✦</span><span>✦</span><span>✦</span></div>
+      <blockquote data-i18n="statement.quote">
+        We don't stock everything.<br/>
+        We stock the things worth <span class="script">keeping.</span>
+      </blockquote>
+      <p class="label by" data-i18n="statement.by">Jasmine Concept — Curated Exclusives</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="foot-grid">
+      <div class="reveal">
+        <div class="foot-mark">Jasmine <span class="spark">✦</span></div>
+      </div>
+      <div class="foot-right reveal">
+        <p class="label" style="margin-bottom:1.1rem;" data-i18n="foot.hours">By appointment &amp; online</p>
+        <a class="wa" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.6-.1-1.5-.5-3-1.4-4.2-2.7-1-1-1.6-2.3-1.8-2.7-.2-.4-.5-1.1 0-1.7.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.5l.7 1.6c.1.2 0 .4-.1.5l-.4.5c-.1.1-.3.3-.1.6.5.8 1 1.3 1.7 1.8.5.3.8.5 1.1.6.2.1.4 0 .5-.1l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.2.1.4.2.4.3.1.2.1.5 0 .6Z"/></svg>
+          <span data-i18n="foot.wa">Chat on WhatsApp</span>
+        </a>
+      </div>
+    </div>
+    <div class="foot-note">
+      <span data-i18n="foot.copy">© 2026 Jasmine Concept · Baku, Azerbaijan</span>
+      <span data-i18n="foot.cats">Beauty · Fashion · Exclusives</span>
+    </div>
+  </footer>
+
+<script>
+(function(){
+  /* ════════════════════════════════════════════════════════════
+     CONFIG — edit these for your business
+     ════════════════════════════════════════════════════════════ */
+  var WA_NUMBER = '994000000000';   // ← TODO: your WhatsApp number, country code, digits only (no +, spaces, or 0 prefix)
+  var BRAND     = 'Jasmine Concept';
+  var DEFAULT_LANG = 'az';           // 'az' or 'en'
+  /* ════════════════════════════════════════════════════════════ */
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── translations ── */
+  var I18N = {
+    az:{
+      'nav.home':'Ana səhifə',
+      'nav.shop':'Mağaza',
+      'nav.fav':'Seçilmişlər',
+      'nav.contact':'Əlaqə',
+      'hero.label':'<span class="spark">✦</span> Bakıda seçilir · Dünya eksklüzivləri',
+      'hero.title':'Yeni <span class="script">sevimliləriniz</span>lə<br/>tanış olun',
+      'hero.sub':'Yerli bazarda tapa bilmədiyiniz eksklüzivlər üçün onlayn məkan — səs-küydən uzaq, zövqlə seçilmiş gözəllik və moda kolleksiyası.',
+      'hero.cta':'Kolleksiyaya baxın',
+      'hero.scroll':'Aşağı',
+      'shop.title':'Gözəl şeylər, <span class="script">içəridə</span>',
+      'shop.sub':'Kiçik, düşünülmüş seçim. Nadir hallarda yenilənir — ciddi yanaşılır.',
+      'badge.new':'Yeni gəldi',
+      'badge.best':'Ən çox satılan',
+      'badge.sold':'Bitib',
+      'card.order':'WhatsApp ilə sifariş →',
+      'card.waitlist':'Növbəyə yazıl →',
+      'statement.quote':'Biz hər şeyi saxlamırıq.<br/>Yalnız <span class="script">dəyərli</span> olanları seçirik.',
+      'statement.by':'Jasmine Concept — Seçilmiş Eksklüzivlər',
+      'foot.hours':'Onlayn və görüş ilə',
+      'foot.wa':'WhatsApp-da yazın',
+      'foot.copy':'© 2026 Jasmine Concept · Bakı, Azərbaycan',
+      'foot.cats':'Gözəllik · Moda · Eksklüzivlər'
+    },
+    en:{
+      'nav.home':'Home',
+      'nav.shop':'Shop',
+      'nav.fav':'Favourites',
+      'nav.contact':'Contact',
+      'hero.label':'<span class="spark">✦</span> Curated in Baku · Worldwide exclusives',
+      'hero.title':'Say hello to your<br/>new <span class="script">favourites</span>',
+      'hero.sub':"An online space for the exclusives you can't find locally — a quietly edited collection of beauty &amp; fashion, chosen for taste over noise.",
+      'hero.cta':'Explore the edit',
+      'hero.scroll':'Scroll',
+      'shop.title':'Pretty things, <span class="script">inside</span>',
+      'shop.sub':'A small, deliberate edit. Restocked rarely — taken seriously.',
+      'badge.new':'New Arrival',
+      'badge.best':'Best Seller',
+      'badge.sold':'Sold Out',
+      'card.order':'Order on WhatsApp →',
+      'card.waitlist':'Join waitlist →',
+      'statement.quote':"We don't stock everything.<br/>We stock the things worth <span class=\"script\">keeping.</span>",
+      'statement.by':'Jasmine Concept — Curated Exclusives',
+      'foot.hours':'By appointment &amp; online',
+      'foot.wa':'Chat on WhatsApp',
+      'foot.copy':'© 2026 Jasmine Concept · Baku, Azerbaijan',
+      'foot.cats':'Beauty · Fashion · Exclusives'
+    }
+  };
+
+  /* WhatsApp message templates per language */
+  var MSG = {
+    az:{
+      order:function(n,p){ return 'Salam! "'+n+'" ('+p+') sifariş etmək istəyirəm. — '+BRAND; },
+      waitlist:function(n){ return 'Salam! "'+n+'" yenidən mövcud olanda mənə xəbər verə bilərsinizmi? — '+BRAND; },
+      general:'Salam! Jasmine Concept haqqında məlumat almaq istəyirəm.'
+    },
+    en:{
+      order:function(n,p){ return 'Hi! I would like to order "'+n+'" ('+p+'). — '+BRAND; },
+      waitlist:function(n){ return 'Hi! Please let me know when "'+n+'" is back in stock. — '+BRAND; },
+      general:'Hi! I would like to know more about Jasmine Concept.'
+    }
+  };
+
+  function waLink(text){ return 'https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(text); }
+
+  var currentLang = DEFAULT_LANG;
+  var footWa = document.querySelector('.wa');
+
+  function applyLang(lang){
+    if(!I18N[lang]) return;
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if(I18N[lang][key] != null) el.innerHTML = I18N[lang][key];
+    });
+    document.querySelectorAll('.lang-toggle button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    if(footWa) footWa.href = waLink(MSG[lang].general);
+    try{ localStorage.setItem('jc_lang', lang); }catch(e){}
+  }
+
+  /* restore saved language, else default */
+  var saved;
+  try{ saved = localStorage.getItem('jc_lang'); }catch(e){}
+  applyLang(saved && I18N[saved] ? saved : DEFAULT_LANG);
+
+  /* ── language toggle ── */
+  document.querySelectorAll('.lang-toggle button').forEach(function(b){
+    b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); });
+  });
+
+  /* ── per-product WhatsApp ordering ── */
+  document.querySelectorAll('.card').forEach(function(card){
+    function order(){
+      var name  = (card.querySelector('.card-name')||{}).textContent || '';
+      var price = (card.querySelector('.card-price')||{}).textContent || '';
+      name = name.trim(); price = price.trim();
+      var sold = card.classList.contains('is-sold');
+      var text = sold ? MSG[currentLang].waitlist(name) : MSG[currentLang].order(name, price);
+      window.open(waLink(text), '_blank', 'noopener');
+    }
+    card.addEventListener('click', order);
+    card.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); order(); }
+    });
+  });
+
+  /* ── choreographed page-load ── */
+  function start(){
+    document.body.classList.add('loaded');   // triggers hero stagger
+    var loader = document.getElementById('loader');
+    if(loader){
+      loader.classList.add('done');
+      setTimeout(function(){ if(loader.parentNode) loader.parentNode.removeChild(loader); }, 1100);
+    }
+  }
+  var seen;
+  try{ seen = sessionStorage.getItem('jc_seen'); }catch(e){}
+  if(reduce || seen){ start(); }            // skip the hold on reduced-motion or repeat visits this session
+  else {
+    try{ sessionStorage.setItem('jc_seen','1'); }catch(e){}
+    window.addEventListener('load', function(){ setTimeout(start, 1400); });
+    setTimeout(start, 2800);                 // fallback if load is slow
+  }
+
+  /* ── frosted header on scroll ── */
+  var header = document.getElementById('header');
+  function onScroll(){
+    if(window.scrollY > 40) header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  /* ── staggered scroll-reveal ── */
+  var items = document.querySelectorAll('.reveal');
+  if(reduce){
+    items.forEach(function(el){ el.classList.add('in'); });
+  } else if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var delay = (e.target.style.getPropertyValue('--i')||0) * 120;
+          setTimeout(function(){ e.target.classList.add('in'); }, delay);
+          io.unobserve(e.target);
+        }
+      });
+    }, {threshold:.16, rootMargin:'0px 0px -8% 0px'});
+    items.forEach(function(el){ io.observe(el); });
+  } else {
+    items.forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+</body>
+</html>
