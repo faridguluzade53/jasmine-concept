@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin — Jasmine Concept</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80' font-family='serif' fill='%23696E71'>JC</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --seasalt:#F8F9FA; --platinum:#E1E2E4; --platinum-2:#D2D5D8;
+    --french:#B2B6BA; --dim:#696E71; --ink:#1c1d1f; --ink-soft:#4a4c4f;
+    --ok:#2e7d52; --danger:#b5443e;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background:var(--platinum); color:var(--ink); font-family:'Jost',system-ui,sans-serif; font-weight:300; -webkit-font-smoothing:antialiased; }
+  a{ color:inherit; }
+  .serif{ font-family:'Cormorant Garamond',serif; }
+
+  /* ── gate ── */
+  .gate{ position:fixed; inset:0; background:var(--seasalt); display:grid; place-items:center; z-index:50; }
+  .gate-card{ width:min(380px,90vw); text-align:center; }
+  .gate-card .mono{ font-family:'Cormorant Garamond',serif; font-weight:600; font-size:2.6rem; letter-spacing:.04em; }
+  .gate-card .name{ font-family:'Cormorant Garamond',serif; letter-spacing:.34em; text-transform:uppercase; font-size:.8rem; margin-top:.3rem; }
+  .gate-card h1{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:1.4rem; margin:2.2rem 0 1.4rem; letter-spacing:.05em; }
+  .gate-card input{ width:100%; padding:.9rem 1rem; border:1px solid var(--platinum-2); background:#fff; font-family:inherit; font-size:.95rem; outline:none; margin-bottom:.7rem; }
+  .gate-card input:focus{ border-color:var(--dim); }
+  .gate-card button{ width:100%; margin-top:.4rem; padding:.9rem; background:var(--ink); color:#fff; border:none; cursor:pointer; font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; }
+  .gate-card button:disabled{ opacity:.5; cursor:default; }
+  .gate-err{ color:var(--danger); font-size:.78rem; margin-top:.8rem; min-height:1.2em; }
+
+  /* ── topbar ── */
+  header{ background:var(--ink); color:var(--seasalt); position:sticky; top:0; z-index:20; }
+  .topbar{ max-width:1100px; margin:0 auto; padding:1rem 1.5rem; display:flex; align-items:center; justify-content:space-between; }
+  .topbar .brand{ display:flex; align-items:center; gap:.7rem; }
+  .topbar .brand .mono{ font-family:'Cormorant Garamond',serif; font-weight:600; font-size:1.4rem; }
+  .topbar .brand small{ font-size:.66rem; letter-spacing:.2em; text-transform:uppercase; color:var(--french); }
+  .topbar-actions{ display:flex; gap:.8rem; align-items:center; }
+  .topbar-actions a, .topbar-actions button{ font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--seasalt); background:none; border:1px solid var(--dim); padding:.55rem 1rem; cursor:pointer; transition:background .3s; }
+  .topbar-actions a:hover, .topbar-actions button:hover{ background:var(--dim); }
+  .topbar-actions .who{ border:none; color:var(--french); cursor:default; text-transform:none; letter-spacing:.06em; }
+
+  main{ max-width:1100px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+  .layout{ display:grid; grid-template-columns:380px 1fr; gap:2rem; align-items:start; }
+  @media(max-width:880px){ .layout{ grid-template-columns:1fr; } }
+
+  .panel{ background:var(--seasalt); padding:1.6rem; }
+  .panel h2{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:1.4rem; letter-spacing:.03em; margin-bottom:1.2rem; display:flex; align-items:center; justify-content:space-between; }
+  .panel h2 small{ font-family:'Jost'; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); font-weight:400; }
+
+  label{ display:block; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); margin:1rem 0 .4rem; }
+  input[type=text], input[type=number], input[type=email], input[type=password], select{
+    width:100%; padding:.75rem .9rem; border:1px solid var(--platinum-2); background:#fff;
+    font-family:inherit; font-size:.9rem; outline:none; color:var(--ink);
+  }
+  input:focus, select:focus{ border-color:var(--dim); }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+
+  .drop{ border:1px dashed var(--french); background:#fff; padding:1.2rem; text-align:center; cursor:pointer; transition:border-color .3s, background .3s; }
+  .drop:hover{ border-color:var(--dim); background:var(--seasalt); }
+  .drop p{ font-size:.78rem; color:var(--dim); }
+  .drop small{ font-size:.66rem; color:var(--french); }
+  .preview{ margin-top:.8rem; display:none; }
+  .preview img{ width:100%; max-height:200px; object-fit:cover; background:var(--platinum); }
+
+  .form-actions{ display:flex; gap:.7rem; margin-top:1.5rem; }
+  .btn-primary{ flex:1; padding:.9rem; background:var(--ink); color:#fff; border:none; cursor:pointer; font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; }
+  .btn-primary:disabled{ opacity:.55; cursor:default; }
+  .btn-ghost{ padding:.9rem 1.2rem; background:none; border:1px solid var(--platinum-2); cursor:pointer; font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink); }
+
+  .count-bar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+  .count-bar .c{ font-size:.78rem; color:var(--dim); }
+  .search{ max-width:220px; }
+
+  .plist{ display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:1rem; }
+  .pcard{ background:var(--seasalt); position:relative; }
+  .pcard .ph{ position:relative; aspect-ratio:1/1; background:var(--platinum); overflow:hidden; }
+  .pcard .ph img{ width:100%; height:100%; object-fit:cover; }
+  .pcard .tag{ position:absolute; top:.5rem; left:.5rem; background:var(--ink); color:#fff; font-size:.54rem; letter-spacing:.12em; text-transform:uppercase; padding:.25rem .5rem; }
+  .pcard .body{ padding:.8rem; }
+  .pcard .b{ font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); }
+  .pcard .n{ font-size:.88rem; margin:.15rem 0; }
+  .pcard .pr{ font-size:.8rem; color:var(--ink-soft); }
+  .pcard .ops{ display:flex; border-top:1px solid var(--platinum); }
+  .pcard .ops button{ flex:1; padding:.6rem; background:none; border:none; cursor:pointer; font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); transition:background .25s, color .25s; }
+  .pcard .ops button:hover{ background:var(--platinum); }
+  .pcard .ops .del:hover{ color:var(--danger); }
+  .pcard .ops button + button{ border-left:1px solid var(--platinum); }
+
+  .empty{ grid-column:1/-1; text-align:center; padding:3rem; color:var(--dim); font-size:.9rem; }
+
+  .toast{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(140%); background:var(--ink); color:#fff; padding:.85rem 1.5rem; font-size:.76rem; letter-spacing:.08em; z-index:60; transition:transform .4s var(--ease); }
+  .toast.show{ transform:translateX(-50%) translateY(0); }
+  .toast.ok{ background:var(--ok); } .toast.bad{ background:var(--danger); }
+
+  .note{ font-size:.72rem; color:var(--dim); background:var(--seasalt); padding:.8rem 1rem; margin-top:1.5rem; border-left:2px solid var(--french); line-height:1.6; }
+  .cloud{ display:inline-flex; align-items:center; gap:.4em; font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ok); }
+  .cloud.off{ color:var(--danger); }
+</style>
+</head>
+<body>
+
+  <!-- login gate -->
+  <div class="gate" id="gate">
+    <div class="gate-card">
+      <div class="mono">JC</div>
+      <div class="name">Jasmine Concept</div>
+      <h1>Admin Sign In</h1>
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" autocomplete="username" required />
+        <input type="password" id="password" placeholder="Password" autocomplete="current-password" required />
+        <button type="submit" id="loginBtn">Sign In</button>
+      </form>
+      <div class="gate-err" id="loginErr"></div>
+    </div>
+  </div>
+
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <span class="mono">JC</span>
+        <small>Admin Panel</small>
+      </div>
+      <div class="topbar-actions">
+        <span class="who" id="whoami"></span>
+        <a href="index.html" target="_blank">View Store ↗</a>
+        <button id="exportBtn">Export</button>
+        <button id="logoutBtn">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="layout">
+      <!-- form -->
+      <section class="panel">
+        <h2>Product <small id="formMode">New</small></h2>
+        <form id="pform">
+          <input type="hidden" id="pid" />
+
+          <label for="pname">Product Name</label>
+          <input type="text" id="pname" placeholder="e.g. Pocket Blush" required />
+
+          <label for="pbrand">Brand</label>
+          <input type="text" id="pbrand" placeholder="e.g. Rhode" required />
+
+          <div class="row2">
+            <div>
+              <label for="pprice">Price (AZN)</label>
+              <input type="number" id="pprice" min="0" step="1" placeholder="55" required />
+            </div>
+            <div>
+              <label for="pcat">Category</label>
+              <select id="pcat">
+                <option>Beauty</option>
+                <option>Fashion</option>
+                <option>Brands</option>
+              </select>
+            </div>
+          </div>
+
+          <label for="pbadge">Badge</label>
+          <select id="pbadge">
+            <option value="New">New</option>
+            <option value="Best Seller">Best Seller</option>
+            <option value="">None</option>
+            <option value="Sold Out">Sold Out</option>
+          </select>
+
+          <label>Product Image</label>
+          <div class="drop" id="drop">
+            <p>Click to upload or drag an image</p>
+            <small>JPG / PNG · auto-resized · uploaded to Supabase Storage</small>
+          </div>
+          <input type="file" id="pfile" accept="image/*" hidden />
+          <label for="purl" style="margin-top:.8rem;">…or paste an image URL</label>
+          <input type="text" id="purl" placeholder="https://…" />
+          <div class="preview" id="preview"><img id="previewImg" alt="preview" /></div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" id="saveBtn">Add Product</button>
+            <button type="button" class="btn-ghost" id="resetBtn">Clear</button>
+          </div>
+        </form>
+
+        <div class="note">
+          <span class="cloud" id="cloudState">● Connected to Supabase</span><br>
+          Products save to your Supabase database and go live for <strong>every visitor</strong> instantly. Images upload to the <code>product-images</code> bucket.
+        </div>
+      </section>
+
+      <!-- list -->
+      <section>
+        <div class="count-bar">
+          <span class="c" id="countLabel">Loading…</span>
+          <input type="text" class="search" id="search" placeholder="Search…" />
+        </div>
+        <div class="plist" id="plist"></div>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  /* ════════ CONFIG ════════ */
+  var SUPABASE_URL  = 'https://mmahlwopdblmcpdeaeml.supabase.co';
+  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tYWhsd29wZGJsbWNwZGVhZW1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0OTg3NzUsImV4cCI6MjA5ODA3NDc3NX0.ENf-NcCt9JCN71_rqmL2jKSZBCw8S9r5mpvK9j3yYTo';
+  var BUCKET = 'product-images';
+
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  var products = [];
+
+  /* ── helpers ── */
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function money(n){ return Number(n).toLocaleString('en-US')+' AZN'; }
+  var toastEl=document.getElementById('toast'), tT;
+  function toast(msg,kind){ toastEl.textContent=msg; toastEl.className='toast show'+(kind?' '+kind:''); clearTimeout(tT); tT=setTimeout(function(){ toastEl.className='toast'; },2800); }
+
+  /* ── auth ── */
+  var gate=document.getElementById('gate');
+  function showApp(session){
+    gate.style.display='none';
+    document.getElementById('whoami').textContent=session.user.email;
+    loadProducts();
+  }
+  function showGate(){ gate.style.display='grid'; }
+
+  sb.auth.getSession().then(function(res){
+    if(res.data.session) showApp(res.data.session); else showGate();
+  });
+  sb.auth.onAuthStateChange(function(_ev, session){ if(!session) showGate(); });
+
+  document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn=document.getElementById('loginBtn'); btn.disabled=true;
+    document.getElementById('loginErr').textContent='';
+    sb.auth.signInWithPassword({
+      email: document.getElementById('email').value.trim(),
+      password: document.getElementById('password').value
+    }).then(function(res){
+      btn.disabled=false;
+      if(res.error){ document.getElementById('loginErr').textContent=res.error.message; return; }
+      showApp(res.data.session);
+    });
+  });
+  document.getElementById('logoutBtn').addEventListener('click', function(){ sb.auth.signOut(); });
+
+  /* ── image handling: resize then keep as data URL until upload ── */
+  var imgData=''; var imgIsFile=false;
+  function fileToData(file){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var img=new Image();
+      img.onload=function(){
+        var max=900, w=img.width, h=img.height;
+        if(w>h && w>max){ h=Math.round(h*max/w); w=max; }
+        else if(h>max){ w=Math.round(w*max/h); h=max; }
+        var cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        imgData=cv.toDataURL('image/jpeg',0.85); imgIsFile=true;
+        showPreview(imgData);
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  function showPreview(src){ if(!src){ document.getElementById('preview').style.display='none'; return; } document.getElementById('previewImg').src=src; document.getElementById('preview').style.display='block'; }
+
+  var drop=document.getElementById('drop'), pfile=document.getElementById('pfile'), purl=document.getElementById('purl');
+  drop.addEventListener('click', function(){ pfile.click(); });
+  pfile.addEventListener('change', function(){ if(this.files[0]){ purl.value=''; fileToData(this.files[0]); } });
+  ['dragover','dragenter'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.style.borderColor='var(--dim)'; }); });
+  ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.style.borderColor=''; }); });
+  drop.addEventListener('drop', function(e){ var f=e.dataTransfer.files[0]; if(f && f.type.indexOf('image')===0){ purl.value=''; fileToData(f); } });
+  purl.addEventListener('input', function(){ if(this.value.trim()){ imgData=this.value.trim(); imgIsFile=false; showPreview(imgData); } });
+
+  function dataURLtoBlob(dataurl){
+    var arr=dataurl.split(','), mime=arr[0].match(/:(.*?);/)[1], bstr=atob(arr[1]), n=bstr.length, u8=new Uint8Array(n);
+    while(n--) u8[n]=bstr.charCodeAt(n);
+    return new Blob([u8],{type:mime});
+  }
+  function uploadImage(dataurl){
+    var blob=dataURLtoBlob(dataurl);
+    var path='p'+Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.jpg';
+    return sb.storage.from(BUCKET).upload(path, blob, {contentType:'image/jpeg', upsert:true}).then(function(res){
+      if(res.error) throw res.error;
+      return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+    });
+  }
+
+  /* ── form ── */
+  var form=document.getElementById('pform');
+  var fields={ id:document.getElementById('pid'), name:document.getElementById('pname'), brand:document.getElementById('pbrand'),
+    price:document.getElementById('pprice'), cat:document.getElementById('pcat'), badge:document.getElementById('pbadge') };
+
+  function resetForm(){
+    form.reset(); fields.id.value=''; imgData=''; imgIsFile=false; showPreview('');
+    document.getElementById('formMode').textContent='New';
+    document.getElementById('saveBtn').textContent='Add Product';
+  }
+  document.getElementById('resetBtn').addEventListener('click', resetForm);
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!imgData){ toast('Please add an image','bad'); return; }
+    var saveBtn=document.getElementById('saveBtn'); saveBtn.disabled=true; saveBtn.textContent='Saving…';
+
+    var ready = imgIsFile ? uploadImage(imgData) : Promise.resolve(imgData);
+    ready.then(function(imgUrl){
+      var row={ name:fields.name.value.trim(), brand:fields.brand.value.trim(),
+        price:Number(fields.price.value)||0, category:fields.cat.value, badge:fields.badge.value, img:imgUrl };
+      if(fields.id.value){
+        return sb.from('products').update(row).eq('id', fields.id.value);
+      }
+      return sb.from('products').insert(row);
+    }).then(function(res){
+      saveBtn.disabled=false;
+      if(res.error) throw res.error;
+      toast(fields.id.value?'Product updated':'Product added','ok');
+      resetForm(); loadProducts();
+    }).catch(function(err){
+      saveBtn.disabled=false; saveBtn.textContent=fields.id.value?'Save Changes':'Add Product';
+      toast('Error: '+(err.message||'save failed'),'bad'); console.error(err);
+    });
+  });
+
+  /* ── list ── */
+  var plist=document.getElementById('plist'), search=document.getElementById('search'), countLabel=document.getElementById('countLabel');
+  function loadProducts(){
+    countLabel.textContent='Loading…';
+    sb.from('products').select('*').order('created_at',{ascending:false}).then(function(res){
+      if(res.error){ countLabel.textContent='Failed to load'; toast(res.error.message,'bad'); return; }
+      products=res.data||[]; render();
+    });
+  }
+  function render(){
+    var q=(search.value||'').toLowerCase();
+    var list=products.filter(function(p){ return !q || ((p.name||'')+' '+(p.brand||'')+' '+(p.category||'')).toLowerCase().indexOf(q)>-1; });
+    countLabel.textContent=products.length+' product'+(products.length!==1?'s':'');
+    if(!list.length){ plist.innerHTML='<div class="empty">'+(products.length?'No matches.':'No products yet — add your first on the left.')+'</div>'; return; }
+    plist.innerHTML=list.map(function(p){
+      return '<div class="pcard">'+
+        '<div class="ph">'+(p.badge?'<span class="tag">'+esc(p.badge)+'</span>':'')+'<img src="'+esc(p.img)+'" alt=""></div>'+
+        '<div class="body"><div class="b">'+esc(p.brand)+' · '+esc(p.category)+'</div>'+
+        '<div class="n">'+esc(p.name)+'</div><div class="pr">'+money(p.price)+'</div></div>'+
+        '<div class="ops"><button data-edit="'+esc(p.id)+'">Edit</button><button class="del" data-del="'+esc(p.id)+'">Delete</button></div>'+
+      '</div>';
+    }).join('');
+  }
+  search.addEventListener('input', render);
+
+  plist.addEventListener('click', function(e){
+    var ed=e.target.getAttribute('data-edit'), dl=e.target.getAttribute('data-del');
+    if(ed){
+      var p=products.find(function(x){ return String(x.id)===ed; }); if(!p) return;
+      fields.id.value=p.id; fields.name.value=p.name; fields.brand.value=p.brand; fields.price.value=p.price;
+      fields.cat.value=p.category||'Beauty'; fields.badge.value=p.badge||''; imgData=p.img; imgIsFile=false; showPreview(p.img);
+      purl.value=(String(p.img).indexOf('data:')===0)?'':p.img;
+      document.getElementById('formMode').textContent='Editing';
+      document.getElementById('saveBtn').textContent='Save Changes';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    if(dl){
+      var t=products.find(function(x){ return String(x.id)===dl; });
+      if(confirm('Delete "'+(t?t.name:'this product')+'"?')){
+        sb.from('products').delete().eq('id', dl).then(function(res){
+          if(res.error){ toast(res.error.message,'bad'); return; }
+          toast('Product deleted'); loadProducts();
+        });
+      }
+    }
+  });
+
+  /* ── export ── */
+  document.getElementById('exportBtn').addEventListener('click', function(){
+    var blob=new Blob([JSON.stringify(products,null,2)],{type:'application/json'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='jasmine-products.json'; a.click();
+    toast('Catalogue exported','ok');
+  });
+})();
+</script>
+</body>
+</html>
