@@ -14,6 +14,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<!-- enable motion before first paint (skips for users who prefer reduced motion) -->
+<script>(function(){try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-motion');}catch(e){}})();</script>
 <style>
   :root{
     /* ── client palette: Seasalt → Dim gray ── */
@@ -427,6 +429,104 @@
 
   .admin-link{ position:fixed; bottom:14px; left:14px; z-index:80; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--french); opacity:.6; transition:opacity .3s; }
   .admin-link:hover{ opacity:1; color:var(--dim); }
+
+  /* ═══════════════════ MOTION LAYER (level 6) ═══════════════════
+     Everything here is gated on .js-motion (set in <head>) and the
+     no-preference media query — remove this block to return to level 5. */
+  @media (prefers-reduced-motion: no-preference){
+
+    /* ── hero entrance ── */
+    .js-motion .hero-copy > *{ opacity:0; transform:translateY(26px); }
+    .js-motion.ready .hero-copy > *{ opacity:1; transform:none;
+      transition:opacity 1s var(--ease), transform 1s var(--ease); }
+    .js-motion.ready .hero-copy > *:nth-child(1){ transition-delay:.12s; }
+    .js-motion.ready .hero-copy > *:nth-child(2){ transition-delay:.26s; }
+    .js-motion.ready .hero-copy > *:nth-child(3){ transition-delay:.40s; }
+    .js-motion.ready .hero-copy > *:nth-child(4){ transition-delay:.54s; }
+    .js-motion.ready .hero-copy > *:nth-child(5){ transition-delay:.68s; }
+    .js-motion .hero-img{ opacity:0; }
+    .js-motion.ready .hero-img{ opacity:1; transition:opacity 1.5s var(--ease);
+      animation:kenburns 24s ease-in-out 1.8s infinite alternate; }
+    @keyframes kenburns{ from{ transform:scale(1.02); } to{ transform:scale(1.09); } }
+    .js-motion .hero-eyebrow .diamond{ animation:spin 9s linear infinite; display:inline-block; }
+    @keyframes spin{ to{ transform:rotate(360deg); } }
+
+    /* ── scroll reveal (hidden until in view) ── */
+    .js-motion .sec-head,
+    .js-motion .feature,
+    .js-motion .promo-card,
+    .js-motion .brand-card,
+    .js-motion .insta-grid a,
+    .js-motion .foot-col,
+    .js-motion .center-btn,
+    .js-motion .nl-left,
+    .js-motion .nl-form,
+    .js-motion .track .card{
+      opacity:0; transform:translateY(34px);
+      transition:opacity .8s var(--ease), transform .8s var(--ease);
+    }
+    .js-motion .sec-head.in,
+    .js-motion .feature.in,
+    .js-motion .promo-card.in,
+    .js-motion .brand-card.in,
+    .js-motion .insta-grid a.in,
+    .js-motion .foot-col.in,
+    .js-motion .center-btn.in,
+    .js-motion .nl-left.in,
+    .js-motion .nl-form.in,
+    .js-motion .track .card.in{ opacity:1; transform:none; }
+
+    /* stagger within rows */
+    .js-motion .feature:nth-child(2){ transition-delay:.08s; }
+    .js-motion .feature:nth-child(3){ transition-delay:.16s; }
+    .js-motion .feature:nth-child(4){ transition-delay:.24s; }
+    .js-motion .promo-card:nth-child(2){ transition-delay:.12s; }
+    .js-motion .brand-card:nth-child(2){ transition-delay:.07s; }
+    .js-motion .brand-card:nth-child(3){ transition-delay:.14s; }
+    .js-motion .brand-card:nth-child(4){ transition-delay:.21s; }
+    .js-motion .brand-card:nth-child(5){ transition-delay:.28s; }
+    .js-motion .insta-grid a:nth-child(2){ transition-delay:.06s; }
+    .js-motion .insta-grid a:nth-child(3){ transition-delay:.12s; }
+    .js-motion .insta-grid a:nth-child(4){ transition-delay:.18s; }
+    .js-motion .insta-grid a:nth-child(5){ transition-delay:.24s; }
+    .js-motion .insta-grid a:nth-child(6){ transition-delay:.30s; }
+    .js-motion .track .card:nth-child(2){ transition-delay:.07s; }
+    .js-motion .track .card:nth-child(3){ transition-delay:.14s; }
+    .js-motion .track .card:nth-child(4){ transition-delay:.21s; }
+    .js-motion .track .card:nth-child(5){ transition-delay:.28s; }
+
+    /* ── button polish: lift + glint sweep ── */
+    .btn{ transition:color .45s var(--ease), transform .35s var(--ease), box-shadow .45s var(--ease); }
+    .btn:hover{ transform:translateY(-3px); box-shadow:0 14px 30px rgba(28,29,31,.18); }
+    .btn:active{ transform:translateY(-1px) scale(.99); }
+    .btn::after{ content:''; position:absolute; top:0; bottom:0; left:-75%; width:55%; z-index:1;
+      background:linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent);
+      transform:skewX(-20deg); pointer-events:none; }
+    .btn:hover::after{ animation:btnShine .9s var(--ease); }
+    @keyframes btnShine{ from{ left:-75%; } to{ left:135%; } }
+
+    /* ── header, icons, arrows, cart ── */
+    header{ transition:box-shadow .4s var(--ease), background .4s var(--ease); }
+    header.scrolled{ box-shadow:0 6px 24px rgba(28,29,31,.07); }
+    .icon-btn{ transition:transform .35s var(--ease), opacity .3s; }
+    .icon-btn:hover{ transform:translateY(-2px) scale(1.08); }
+    .cart-count{ transition:transform .3s var(--ease); }
+    .cart-count.pop{ animation:countPop .5s var(--ease); }
+    @keyframes countPop{ 0%{ transform:scale(1); } 40%{ transform:scale(1.55); } 100%{ transform:scale(1); } }
+    .arrow{ transition:background .3s var(--ease), transform .3s var(--ease), box-shadow .3s; }
+    .arrow.prev:hover, .arrow.next:hover{ transform:translateY(-50%) scale(1.12); box-shadow:0 8px 22px rgba(0,0,0,.1); }
+    .nl-form button:hover{ transform:translateX(2px); opacity:.9; transition:transform .3s var(--ease), opacity .3s; }
+    .checkout{ transition:filter .3s, transform .3s var(--ease); }
+    .checkout:hover{ filter:brightness(1.06); transform:translateY(-2px); }
+
+    /* ── product + brand card lift ── */
+    .card{ transition:transform .45s var(--ease); }
+    .card:hover{ transform:translateY(-5px); }
+    .brand-card{ transition:transform .45s var(--ease), box-shadow .45s var(--ease); }
+    .brand-card:hover{ transform:translateY(-5px); box-shadow:0 18px 36px rgba(28,29,31,.16); }
+    .brand-strip span{ transition:opacity .3s var(--ease), color .3s var(--ease), transform .3s var(--ease); }
+    .brand-strip span:hover{ transform:translateY(-2px); }
+  }
 </style>
 </head>
 <body>
@@ -836,6 +936,47 @@
 
   /* re-render if admin changes catalogue in another tab */
   window.addEventListener('storage', function(e){ if(e.key===STORE_KEY){ products=load(); renderProducts(); renderCart(); } });
+})();
+</script>
+
+<!-- ═══════════════ MOTION DRIVER (level 6) — independent of store logic ═══════════════ -->
+<script>
+(function(){
+  var html=document.documentElement;
+  if(!html.classList.contains('js-motion')) return;   // reduced motion / unsupported → static
+
+  /* hero entrance after first frame */
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ html.classList.add('ready'); }); });
+
+  /* scroll reveal */
+  var io;
+  if('IntersectionObserver' in window){
+    io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    },{ threshold:.12, rootMargin:'0px 0px -7% 0px' });
+  }
+  function observe(){
+    if(!io){ return; }
+    document.querySelectorAll('.sec-head, .feature, .promo-card, .brand-card, .insta-grid a, .foot-col, .center-btn, .nl-left, .nl-form, .track .card')
+      .forEach(function(el){ if(el.__io) return; el.__io=1; io.observe(el); });
+  }
+  observe();
+  /* products render async from Supabase — re-scan when the track updates */
+  var track=document.getElementById('productTrack');
+  if(track && 'MutationObserver' in window){ new MutationObserver(observe).observe(track,{childList:true}); }
+
+  /* header shadow on scroll */
+  var header=document.querySelector('header');
+  if(header){ var hs=function(){ header.classList.toggle('scrolled', window.scrollY>20); }; addEventListener('scroll',hs,{passive:true}); hs(); }
+
+  /* cart count pop when it changes */
+  var cc=document.getElementById('cartCount');
+  if(cc && 'MutationObserver' in window){
+    var last=cc.textContent;
+    new MutationObserver(function(){
+      if(cc.textContent!==last){ last=cc.textContent; cc.classList.remove('pop'); void cc.offsetWidth; cc.classList.add('pop'); }
+    }).observe(cc,{ childList:true, characterData:true, subtree:true });
+  }
 })();
 </script>
 </body>

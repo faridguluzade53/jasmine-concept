@@ -99,6 +99,19 @@
   .note{ font-size:.72rem; color:var(--dim); background:var(--seasalt); padding:.8rem 1rem; margin-top:1.5rem; border-left:2px solid var(--french); line-height:1.6; }
   .cloud{ display:inline-flex; align-items:center; gap:.4em; font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ok); }
   .cloud.off{ color:var(--danger); }
+
+  /* ── motion polish ── */
+  @media (prefers-reduced-motion: no-preference){
+    .pcard{ animation:adminCardIn .5s var(--ease) both; transition:transform .35s var(--ease), box-shadow .35s var(--ease); }
+    .pcard:hover{ transform:translateY(-4px); box-shadow:0 14px 30px rgba(28,29,31,.12); }
+    @keyframes adminCardIn{ from{ opacity:0; transform:translateY(16px); } to{ opacity:1; transform:none; } }
+    .btn-primary{ transition:opacity .3s, transform .25s var(--ease), box-shadow .3s; }
+    .btn-primary:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 10px 24px rgba(28,29,31,.18); }
+    .topbar-actions a, .topbar-actions button{ transition:background .3s, transform .25s var(--ease); }
+    .topbar-actions a:hover, .topbar-actions button:hover{ transform:translateY(-1px); }
+    .gate-card button{ transition:transform .25s var(--ease), opacity .3s; }
+    .gate-card button:hover:not(:disabled){ transform:translateY(-2px); }
+  }
 </style>
 </head>
 <body>
