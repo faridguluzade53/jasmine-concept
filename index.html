@@ -66,6 +66,25 @@
   .announce .right{ display:flex; align-items:center; gap:.4em; }
   @media(max-width:720px){ .announce .left span:not(:first-child){ display:none; } }
 
+  /* ───────── utility bar ───────── */
+  .util-bar{
+    background:var(--ink); color:rgba(255,255,255,.78);
+    font-size:.66rem; letter-spacing:.16em; text-transform:uppercase;
+  }
+  .util-bar .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:.62rem; padding-bottom:.62rem; gap:1rem;
+  }
+  .util-bar .util-promo{ display:flex; align-items:center; gap:.6rem; }
+  .util-bar .util-promo .dot{ color:rgba(255,255,255,.4); }
+  .util-bar .util-loc{ display:flex; align-items:center; gap:.45rem; white-space:nowrap; }
+  .util-bar .util-loc svg{ width:12px; height:12px; }
+  @media(max-width:680px){
+    .util-bar .util-promo .dot,
+    .util-bar .util-promo span:not(:first-child){ display:none; }
+    .util-bar{ font-size:.6rem; letter-spacing:.1em; }
+  }
+
   /* ───────── header ───────── */
   header{
     position:sticky; top:0; z-index:50;
@@ -130,18 +149,24 @@
   }
 
   /* ───────── hero ───────── */
-  .hero{ background:var(--platinum); }
-  .hero .wrap{
-    display:grid; grid-template-columns:1fr 1.1fr; align-items:center;
-    gap:2rem; min-height:min(82vh,720px);
+  .hero{
+    position:relative; display:flex; align-items:center;
+    min-height:min(86vh,760px);
+    background:var(--platinum-2) center/cover no-repeat;
+    background-image:
+      linear-gradient(100deg, rgba(236,236,234,.96) 0%, rgba(236,236,234,.78) 32%, rgba(236,236,234,.30) 52%, rgba(236,236,234,0) 68%),
+      url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1800&q=80');
+    filter:saturate(.92);
   }
-  .hero-copy{ padding:3rem 0; }
-  .hero-eyebrow{ display:flex; align-items:center; gap:.7rem; margin-bottom:1.6rem; color:var(--dim); }
-  .hero-eyebrow .diamond{ color:var(--french); }
+  .hero .wrap{ width:100%; }
+  .hero-copy{ max-width:560px; padding:3rem 0; }
+  .hero-eyebrow{ display:flex; align-items:center; gap:.85rem; margin-bottom:1.9rem; }
+  .hero-eyebrow .orn-line{ width:58px; height:1px; background:var(--ink); opacity:.55; }
+  .hero-eyebrow .diamond{ color:var(--ink); font-size:.6rem; opacity:.7; }
   h1.hero-title{
     font-family:'Cormorant Garamond', serif; font-weight:500;
-    font-size:clamp(3.2rem,7vw,6.2rem); line-height:.94; letter-spacing:.005em;
-    color:var(--ink);
+    font-size:clamp(3.2rem,7.2vw,6.4rem); line-height:.92; letter-spacing:.02em;
+    text-transform:uppercase; color:var(--ink);
   }
   .hero-tag{
     margin-top:1.8rem; font-size:1rem; letter-spacing:.04em; text-transform:uppercase;
@@ -150,12 +175,6 @@
   .hero-sub{
     margin-top:1.2rem; font-size:.82rem; letter-spacing:.13em; text-transform:uppercase;
     color:var(--dim);
-  }
-  .hero-img{
-    height:100%; min-height:min(82vh,720px);
-    background:var(--platinum-2) center/cover no-repeat;
-    background-image:url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1100&q=80');
-    filter:grayscale(.18);
   }
 
   /* shared button */
@@ -178,10 +197,13 @@
   .btn.ghost:hover span{ color:#fff; }
 
   @media(max-width:820px){
-    .hero .wrap{ grid-template-columns:1fr; min-height:auto; }
-    .hero-img{ min-height:46vh; order:-1; }
-    .hero-copy{ padding:2.5rem 0 3rem; text-align:center; }
-    .hero-eyebrow{ justify-content:center; }
+    .hero{
+      min-height:auto; align-items:flex-end;
+      background-image:
+        linear-gradient(180deg, rgba(236,236,234,.92) 0%, rgba(236,236,234,.55) 40%, rgba(236,236,234,.85) 100%),
+        url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80');
+    }
+    .hero-copy{ max-width:none; padding:14rem 0 3rem; }
   }
 
   /* ───────── brand strip ───────── */
@@ -444,11 +466,8 @@
     .js-motion.ready .hero-copy > *:nth-child(3){ transition-delay:.40s; }
     .js-motion.ready .hero-copy > *:nth-child(4){ transition-delay:.54s; }
     .js-motion.ready .hero-copy > *:nth-child(5){ transition-delay:.68s; }
-    .js-motion .hero-img{ opacity:0; }
-    .js-motion.ready .hero-img{ opacity:1; transition:opacity 1.5s var(--ease);
-      animation:kenburns 24s ease-in-out 1.8s infinite alternate; }
-    @keyframes kenburns{ from{ transform:scale(1.02); } to{ transform:scale(1.09); } }
-    .js-motion .hero-eyebrow .diamond{ animation:spin 9s linear infinite; display:inline-block; }
+    .js-motion .hero-eyebrow .orn-line{ transform-origin:left center; transform:scaleX(0); }
+    .js-motion.ready .hero-eyebrow .orn-line{ transform:scaleX(1); transition:transform .9s var(--ease) .12s; }
     @keyframes spin{ to{ transform:rotate(360deg); } }
 
     /* ── scroll reveal (hidden until in view) ── */
@@ -542,6 +561,23 @@
     </div>
   </div>
 
+  <!-- utility bar -->
+  <div class="util-bar">
+    <div class="wrap">
+      <div class="util-promo">
+        <span>Authentic Brands</span>
+        <span class="dot">◆</span>
+        <span>Fast Delivery</span>
+        <span class="dot">◆</span>
+        <span>Curated With Care</span>
+      </div>
+      <div class="util-loc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>
+        <span>Delivering to Azerbaijan</span>
+      </div>
+    </div>
+  </div>
+
   <!-- header -->
   <header>
     <div class="wrap">
@@ -584,13 +620,12 @@
   <section class="hero">
     <div class="wrap">
       <div class="hero-copy">
-        <div class="hero-eyebrow caps"><span class="diamond">◆</span> Curated Edit</div>
+        <div class="hero-eyebrow"><span class="orn-line"></span><span class="diamond">◆</span></div>
         <h1 class="hero-title">Jasmine<br>Concept</h1>
         <p class="hero-tag">Curated pieces. Coveted brands.<br>Effortlessly yours.</p>
         <p class="hero-sub">Hard-to-find pieces, without the wait.</p>
         <a href="#new-in" class="btn"><span>Shop the Edit</span></a>
       </div>
-      <div class="hero-img" aria-hidden="true"></div>
     </div>
   </section>
 
