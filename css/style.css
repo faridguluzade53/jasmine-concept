@@ -1,21 +1,25 @@
   :root{
-    /* ── grey-surface palette (client: solid medium grey + white text) ── */
-    --bg:           #737373;  /* solid medium grey — main surfaces */
-    --surface-dark: #3a3a3a;  /* footer / dark bands */
-    --button:       #4a4a4a;  /* CTA buttons — softer than black, darker than --bg */
-    --text:         #ffffff;  /* primary text now sits on grey */
-    --text-on-dark: #ffffff;
-    --muted:        #dcdcdc;  /* secondary text on grey */
-    --border:       #9a9a9a;  /* dividers visible on grey */
+    /* ── colour system: white base + grey panels ── */
+    --bg:           #f4f4f3;  /* off-white page base */
+    --panel:        #737373;  /* the grey tone — used by .section--grey */
+    --text:         #3a3a3a;  /* dark text on white (not pure black) */
+    --muted:        #8a8a8a;  /* secondary text on white */
+    --text-on-dark: #ffffff;  /* text on grey / dark panels */
+    --muted-on-dark:#dcdcdc;  /* secondary text on grey / dark panels */
+    --button:       #4a4a4a;  /* solid CTA buttons */
+    --border:       #e4e4e3;  /* hairline dividers on white */
+    --section-gap:  96px;     /* white space between sections */
 
-    /* legacy tokens remapped onto the palette above — single source of truth.
+    --surface-dark: #3a3a3a;  /* newsletter + footer dark bands */
+
+    /* legacy tokens remapped onto the system above — single source of truth.
        Tune the variables above; everything below inherits. */
     --seasalt:   var(--bg);
     --platinum:  var(--border);
-    --platinum-2:var(--bg);
+    --platinum-2:var(--border);
     --french:    var(--muted);
     --dim:       var(--muted);
-    --ink:       var(--surface-dark);
+    --ink:       var(--text);
     --ink-soft:  var(--text);
 
     --maxw: 1280px;
@@ -41,6 +45,35 @@
   .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 clamp(1rem,4vw,2.5rem); }
 
   .caps{ text-transform:uppercase; letter-spacing:.18em; font-size:.72rem; font-weight:400; }
+
+  /* ───────── grey panels + dark bands + section spacing ─────────
+     White is the base; grey reads as separated panels on white.
+     .section--grey re-scopes the text tokens to their on-dark variants
+     so every descendant flips white automatically. */
+  .section--grey{
+    color:var(--text-on-dark);
+    --text:     var(--text-on-dark);
+    --ink:      var(--text-on-dark);
+    --ink-soft: var(--text-on-dark);
+    --muted:    var(--muted-on-dark);
+    --dim:      var(--muted-on-dark);
+    --french:   var(--muted-on-dark);
+  }
+  /* the grey fill applies to block panels (promo); the hero keeps its photo */
+  .section--grey.block{
+    background:var(--panel);
+    margin-block:var(--section-gap);   /* white above + below the band */
+  }
+  .hero.section--grey{ margin-bottom:var(--section-gap); }
+
+  /* dark bands (newsletter, footer) also need on-dark text tokens */
+  .newsletter, footer{
+    --text:     var(--text-on-dark);
+    --muted:    var(--muted-on-dark);
+    --dim:      var(--muted-on-dark);
+    --french:   var(--muted-on-dark);
+    --ink-soft: var(--text-on-dark);
+  }
 
   /* ───────── announcement bar ───────── */
   .announce{
