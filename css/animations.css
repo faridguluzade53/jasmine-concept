@@ -131,9 +131,9 @@
   html.lux .logo{ transition:transform .5s var(--lux-ease); transform-origin:center; }
   html.lux header.scrolled{ box-shadow:none; }          /* defer to nav-solid */
   html.lux body.nav-solid header{
-    background:rgba(248,249,250,.86);
+    background:rgba(246,246,245,.86);
     -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
-    box-shadow:0 6px 24px rgba(28,29,31,.07);
+    box-shadow:0 6px 24px rgba(58,58,58,.07);
   }
   html.lux body.nav-solid .logo{ transform:scale(.9); }
 }
