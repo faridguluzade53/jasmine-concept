@@ -1,0 +1,139 @@
+/* ══════════════════════════════════════════════════════════════════════
+   animations.css — "quiet luxury" motion layer (additive, reversible)
+
+   Loaded AFTER css/style.css. Adds restrained, typographic, monochrome
+   motion ONLY. Does not alter layout, colour, type, copy or data.
+
+   Reversibility: remove the <link> to this file and the <script> to
+   js/animations.js from index.html → site returns to its prior state.
+   (animations.js stands down the legacy `.js-motion` reveal so the two
+   systems never double up; with these refs gone, the inline <head>
+   script re-enables the original motion untouched.)
+
+   Everything is gated on:
+     • html.lux            — added by animations.js only when motion is OK
+     • prefers-reduced-motion: no-preference
+   so reduced-motion users (and the no-JS case) see only final states.
+   ══════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* editorial easing — slow out, settled landing */
+  --lux-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: no-preference){
+
+  /* ─────────── 1 · HERO ─────────── */
+
+  /* curtain unveil of the hero image (clip-path inset wipe, left→right) */
+  html.lux .hero{ position:relative; }
+  html.lux .hero::after{
+    content:''; position:absolute; inset:0; z-index:5;
+    background:var(--platinum); pointer-events:none;
+    animation:luxCurtain 1.15s var(--lux-ease) forwards;
+  }
+  @keyframes luxCurtain{
+    from{ clip-path:inset(0 0 0 0); }
+    to  { clip-path:inset(0 0 0 100%); }
+  }
+
+  /* headline words rise from a clipped baseline (stagger set inline by JS) */
+  html.lux .hero-title .a-w{
+    display:inline-block; overflow:hidden; vertical-align:top;
+    padding:.06em 0; margin:-.06em 0;
+  }
+  html.lux .hero-title .a-wi{
+    display:inline-block; transform:translateY(115%);
+    transition:transform .95s var(--lux-ease);
+  }
+  html.lux.hero-in .hero-title .a-wi{ transform:translateY(0); }
+
+  /* eyebrow, subtitle, sub-line and CTA fade up after the words */
+  html.lux .hero-copy .hero-eyebrow,
+  html.lux .hero-copy .hero-tag,
+  html.lux .hero-copy .hero-sub,
+  html.lux .hero-copy .btn{
+    opacity:0; transform:translateY(16px);
+    transition:opacity .9s var(--lux-ease), transform .9s var(--lux-ease);
+  }
+  html.lux.hero-in .hero-copy .hero-eyebrow{ opacity:1; transform:none; transition-delay:.40s; }
+  html.lux.hero-in .hero-copy .hero-tag    { opacity:1; transform:none; transition-delay:.95s; }
+  html.lux.hero-in .hero-copy .hero-sub    { opacity:1; transform:none; transition-delay:1.08s; }
+  html.lux.hero-in .hero-copy .btn         { opacity:1; transform:none; transition-delay:1.20s; }
+
+
+  /* ─────────── 2 · SCROLL REVEALS ─────────── */
+  /* fade + translateY(24→0); per-item delay applied inline (≈80ms stagger) */
+  html.lux .lux-reveal{
+    opacity:0; transform:translateY(24px);
+    transition:opacity .85s var(--lux-ease), transform .85s var(--lux-ease);
+  }
+  html.lux .lux-reveal.lux-in{ opacity:1; transform:none; }
+
+
+  /* ─────────── 3 · IMAGE UNVEILS (clip-path curtain) ─────────── */
+  /* hero image handled above; category blocks + brand tiles here */
+  html.lux .lux-wipe{
+    clip-path:inset(0 0 100% 0);
+    transition:clip-path 1.05s var(--lux-ease);
+  }
+  html.lux .lux-wipe.lux-in{ clip-path:inset(0 0 0 0); }
+
+
+  /* ─────────── 4 · PRODUCT CARD HOVER ─────────── */
+  html.lux .card-frame{ overflow:hidden; }
+  html.lux .card-frame img{ transition:transform .45s var(--lux-ease); }
+  html.lux .card:hover .card-frame img{ transform:scale(1.05); }
+
+  /* thin underline draws in under the product name */
+  html.lux .card-name{ position:relative; display:inline-block; }
+  html.lux .card-name::after{
+    content:''; position:absolute; left:0; bottom:-2px;
+    width:0; height:1px; background:var(--ink);
+    transition:width .4s var(--lux-ease);
+  }
+  html.lux .card:hover .card-name::after{ width:100%; }
+
+
+  /* ─────────── 5 · BRAND TILE HOVER ─────────── */
+  html.lux .brand-card img{ transition:transform .6s var(--lux-ease), filter .6s var(--lux-ease); }
+  html.lux .brand-card:hover img{ transform:scale(1.05); }
+  html.lux .brand-card span{ transition:letter-spacing .5s var(--lux-ease); }
+  html.lux .brand-card:hover span{ letter-spacing:.18em; }
+
+
+  /* ─────────── 6 · SEAMLESS MARQUEES ─────────── */
+  html.lux .lux-marquee{ overflow:hidden; }
+  html.lux .lux-marquee-track{
+    display:inline-flex; align-items:center; flex-wrap:nowrap;
+    white-space:nowrap; will-change:transform;
+    animation:luxMarquee var(--lux-mq, 40s) linear infinite;
+  }
+  html.lux .lux-marquee:hover .lux-marquee-track{ animation-play-state:paused; }
+  @keyframes luxMarquee{
+    from{ transform:translateX(0); }
+    to  { transform:translateX(-50%); }
+  }
+  /* brand-name row spacing once it becomes a moving track */
+  html.lux #brandStrip .lux-marquee-track{ gap:3.4rem; }
+  html.lux #brandStrip .lux-marquee-track span{ white-space:nowrap; }
+  /* promo strip occupies its band so the ticker has room to travel */
+  html.lux .announce .left{ flex:1 1 auto; min-width:0; overflow:hidden; }
+  html.lux .announce .left .lux-sep{ margin:0 .9em; color:var(--french); }
+  /* our ticker supplies its own ·-separators and shows every phrase, so
+     neutralise the static strip's auto-separator and mobile hide rules */
+  html.lux .announce .left .lux-marquee-track span::before{ content:none; }
+  html.lux .announce .left .lux-marquee-track span{ display:inline-block; }
+
+
+  /* ─────────── 7 · STICKY NAV (after the hero) ─────────── */
+  html.lux header{ transition:background .5s var(--lux-ease), box-shadow .5s var(--lux-ease); }
+  html.lux .logo{ transition:transform .5s var(--lux-ease); transform-origin:center; }
+  html.lux header.scrolled{ box-shadow:none; }          /* defer to nav-solid */
+  html.lux body.nav-solid header{
+    background:rgba(248,249,250,.86);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    box-shadow:0 6px 24px rgba(28,29,31,.07);
+  }
+  html.lux body.nav-solid .logo{ transform:scale(.9); }
+}

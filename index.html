@@ -17,6 +17,7 @@
 <!-- enable motion before first paint (skips for users who prefer reduced motion) -->
 <script>(function(){try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-motion');}catch(e){}})();</script>
 <link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/animations.css" />
 </head>
 <body>
 
@@ -278,5 +279,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/main.js"></script>
+<script defer src="js/animations.js"></script>
 </body>
 </html>
