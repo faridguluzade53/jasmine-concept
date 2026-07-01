@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Jasmine Concept — Curated Beauty &amp; Fashion</title>
+<title>Preorder — Jasmine Concept</title>
 
-<meta name="description" content="Jasmine Concept — authentic, hard-to-find beauty &amp; fashion brands, curated with care and delivered across Azerbaijan." />
+<meta name="description" content="Preorder hard-to-find beauty &amp; fashion pieces from Jasmine Concept — reserved for you, delivered across Azerbaijan." />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Jasmine Concept — Curated Beauty &amp; Fashion" />
-<meta property="og:description" content="Curated pieces. Coveted brands. Effortlessly yours. Delivering across Azerbaijan." />
+<meta property="og:title" content="Preorder — Jasmine Concept" />
+<meta property="og:description" content="Reserve coveted pieces before they land. Delivering across Azerbaijan." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80' font-family='serif' fill='%23696E71'>JC</text></svg>" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -58,16 +58,15 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
           </button>
           <nav class="nav-links">
-            <a href="#new-in">New In</a>
-            <a href="#beauty">Beauty</a>
-            <a href="#fashion">Fashion</a>
-            <a href="preorder.html">Preorder</a>
-            <a href="#brands">Brands</a>
-            <a href="#about">About Us</a>
+            <a href="index.html#new-in">New In</a>
+            <a href="index.html#beauty">Beauty</a>
+            <a href="index.html#fashion">Fashion</a>
+            <a href="preorder.html" aria-current="page">Preorder</a>
+            <a href="index.html#about">About Us</a>
           </nav>
         </div>
 
-        <a href="#" class="logo" aria-label="Jasmine Concept home">
+        <a href="index.html" class="logo" aria-label="Jasmine Concept home">
           <span class="name">Jasmine Concept</span>
         </a>
 
@@ -87,118 +86,26 @@
     </div>
   </header>
 
-  <!-- hero -->
+  <!-- preorder intro -->
   <section class="hero section--grey">
     <div class="wrap">
       <div class="hero-copy">
         <div class="hero-eyebrow"><span class="orn-line"></span><span class="diamond">◆</span></div>
-        <h1 class="hero-title">Jasmine<br>Concept</h1>
-        <p class="hero-tag">Curated pieces. Coveted brands.<br>Effortlessly yours.</p>
-        <p class="hero-sub">Hard-to-find pieces, without the wait.</p>
-        <a href="#new-in" class="btn"><span>Shop the Edit</span></a>
+        <h1 class="hero-title">Preorder</h1>
+        <p class="hero-tag">Reserve coveted pieces<br>before they land.</p>
+        <p class="hero-sub">Secure yours now — we bring it in, and deliver to your door.</p>
       </div>
     </div>
   </section>
 
-  <!-- brand strip -->
-  <div class="brand-strip">
-    <div class="wrap" id="brandStrip">
-      <span>alo</span><span>rhode</span><span>SUMMER FRIDAYS</span><span>Kosas</span>
-      <span>TOWER 28</span><span>SKIMS</span><span>HOURGLASS</span><span>SOL DE JANEIRO</span>
-    </div>
-  </div>
-
-  <!-- features -->
-  <div class="features">
-    <div class="wrap">
-      <div class="feature">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2 4 5v6c0 5 3.5 8 8 11 4.5-3 8-6 8-11V5l-8-3Z"/></svg>
-        <div><h4>Authentic Brands</h4><p>100% guaranteed</p></div>
-      </div>
-      <div class="feature">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/></svg>
-        <div><h4>Carefully Curated</h4><p>Only the best, handpicked</p></div>
-      </div>
-      <div class="feature">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 7h13v8H1z"/><path d="M14 9h5l3 3v3h-8z"/><circle cx="5.5" cy="17.5" r="1.7"/><circle cx="17.5" cy="17.5" r="1.7"/></svg>
-        <div><h4>Fast &amp; Reliable</h4><p>Delivered to your door</p></div>
-      </div>
-      <div class="feature">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 21s-7-4.3-9.3-8.5C1 9 2.5 5.5 6 5.5c2 0 3.2 1.3 4 2.5.8-1.2 2-2.5 4-2.5 3.5 0 5 3.5 3.3 7C19 16.7 12 21 12 21Z"/></svg>
-        <div><h4>Made For You</h4><p>Because you deserve it</p></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- new in -->
-  <section class="block" id="new-in">
+  <!-- preorder grid -->
+  <section class="block">
     <div class="wrap">
       <div class="sec-head">
-        <h2>New In</h2>
+        <h2>Available to Preorder</h2>
         <div class="rule"></div>
-        <a href="#new-in" class="view-all">View All</a>
       </div>
-      <div class="carousel">
-        <button class="arrow prev" id="prevBtn" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m15 5-7 7 7 7"/></svg></button>
-        <div class="track" id="productTrack"><!-- products injected by JS --></div>
-        <button class="arrow next" id="nextBtn" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m9 5 7 7-7 7"/></svg></button>
-      </div>
-    </div>
-  </section>
-
-  <!-- promo split -->
-  <section class="block section--grey">
-    <div class="wrap">
-      <div class="promo">
-        <div class="promo-card" id="beauty">
-          <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80" alt="Beauty essentials" />
-          <div class="veil"></div>
-          <div class="pc">
-            <div class="caps">Beauty</div>
-            <h3>The internet's favourite<br>beauty essentials.</h3>
-            <a href="#new-in" class="btn ghost"><span>Shop Beauty</span></a>
-          </div>
-        </div>
-        <div class="promo-card" id="fashion">
-          <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=900&q=80" alt="Fashion edit" />
-          <div class="veil"></div>
-          <div class="pc">
-            <div class="caps">Fashion</div>
-            <h3>Elevated comfort.<br>Everyday luxury.</h3>
-            <a href="#new-in" class="btn ghost"><span>Shop Fashion</span></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- our brands -->
-  <section class="block" id="brands" style="padding-top:0;">
-    <div class="wrap">
-      <div class="sec-head"><h2>Our Brands</h2><div class="rule"></div></div>
-      <div class="brands-grid">
-        <a class="brand-card"><img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=500&q=80" alt=""><span>rhode</span></a>
-        <a class="brand-card"><img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=500&q=80" alt=""><span>alo</span></a>
-        <a class="brand-card"><img src="https://images.unsplash.com/photo-1571513722275-4b41940f54b8?auto=format&fit=crop&w=500&q=80" alt=""><span>SKIMS</span></a>
-        <a class="brand-card"><img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=500&q=80" alt=""><span>SUMMER FRIDAYS</span></a>
-        <a class="brand-card"><img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=500&q=80" alt=""><span>Kosas</span></a>
-      </div>
-      <div class="center-btn"><a href="#brands" class="btn"><span>Shop All Brands</span></a></div>
-    </div>
-  </section>
-
-  <!-- instagram -->
-  <section class="block" id="about" style="padding-top:0;">
-    <div class="wrap">
-      <div class="sec-head"><h2>Follow Us @JasmineConcept</h2><div class="rule"></div></div>
-      <div class="insta-grid">
-        <a href="#"><img src="https://images.unsplash.com/photo-1522338242992-e1a54906a8da?auto=format&fit=crop&w=400&q=80" alt=""></a>
-        <a href="#"><img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=400&q=80" alt=""></a>
-        <a href="#"><img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=400&q=80" alt=""></a>
-        <a href="#"><img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80" alt=""></a>
-        <a href="#"><img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=400&q=80" alt=""></a>
-        <a href="#"><img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=400&q=80" alt=""></a>
-      </div>
+      <div class="product-grid" id="preorderGrid"><!-- preorder products injected by JS --></div>
     </div>
   </section>
 
@@ -226,11 +133,11 @@
         </div>
         <div class="foot-col">
           <h5>Shop</h5>
-          <a href="#new-in">New In</a><a href="#beauty">Beauty</a><a href="#fashion">Fashion</a><a href="preorder.html">Preorder</a><a href="#brands">Brands</a><a href="#new-in">All Products</a>
+          <a href="index.html#new-in">New In</a><a href="index.html#beauty">Beauty</a><a href="index.html#fashion">Fashion</a><a href="preorder.html">Preorder</a><a href="index.html#new-in">All Products</a>
         </div>
         <div class="foot-col">
           <h5>Customer Care</h5>
-          <a href="#about">About Us</a><a href="#">Shipping &amp; Delivery</a><a href="#">Returns &amp; Exchanges</a><a href="#">FAQs</a><a href="#">Contact Us</a>
+          <a href="index.html#about">About Us</a><a href="#">Shipping &amp; Delivery</a><a href="#">Returns &amp; Exchanges</a><a href="#">FAQs</a><a href="#">Contact Us</a>
         </div>
         <div class="foot-col">
           <h5>Information</h5>
@@ -271,8 +178,8 @@
   <!-- mobile menu -->
   <nav class="mobile-menu" id="mobileMenu">
     <button class="mm-close" id="mmClose">&times;</button>
-    <a href="#new-in">New In</a><a href="#beauty">Beauty</a><a href="#fashion">Fashion</a>
-    <a href="preorder.html">Preorder</a><a href="#brands">Brands</a><a href="#about">About Us</a>
+    <a href="index.html#new-in">New In</a><a href="index.html#beauty">Beauty</a><a href="index.html#fashion">Fashion</a>
+    <a href="preorder.html">Preorder</a><a href="index.html#about">About Us</a>
   </nav>
 
   <div class="toast" id="toast"></div>
