@@ -331,6 +331,15 @@
   .card-name{ font-size:.92rem; margin:.25rem 0 .35rem; color:var(--text); font-weight:400; }
   .card-price{ font-size:.82rem; color:var(--ink-soft); letter-spacing:.04em; }
   .card.sold .card-name, .card.sold .card-price{ color:var(--french); }
+  /* preorder: delivery line under the price (reuses --muted, no new colour) */
+  .card-pre{ font-size:.72rem; color:var(--muted); margin-top:.35rem; letter-spacing:.02em; }
+
+  /* standalone product grid (preorder page) — same .card component, no carousel */
+  .product-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.4rem; }
+  @media(max-width:1100px){ .product-grid{ grid-template-columns:repeat(3,1fr); } }
+  @media(max-width:760px){ .product-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:420px){ .product-grid{ grid-template-columns:1fr; } }
+  .empty-note{ text-align:center; color:var(--muted); padding:clamp(3rem,8vw,5rem) 1rem; font-size:.95rem; letter-spacing:.02em; }
 
   /* ───────── promo split ───────── */
   .promo{ display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; }
@@ -441,6 +450,7 @@
   .cart-item .ci-name{ font-size:.85rem; }
   .cart-item .ci-brand{ font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); }
   .cart-item .ci-price{ font-size:.8rem; color:var(--ink-soft); margin-top:.2rem; }
+  .cart-item .ci-pre{ font-size:.64rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-top:.3rem; }
   .ci-qty{ display:flex; align-items:center; gap:.6rem; margin-top:.5rem; }
   .ci-qty button{ width:22px; height:22px; border:1px solid var(--border); background:none; cursor:pointer; color:var(--text); }
   .ci-remove{ background:none; border:none; cursor:pointer; color:var(--dim); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; margin-left:auto; align-self:flex-start; }

@@ -37,44 +37,63 @@
       if(res.error){ console.warn('Supabase:', res.error.message); return; }
       if(res.data){
         products = res.data;
-        renderProducts(); renderCart();
+        renderProducts(); renderPreorders(); renderCart();
         try{ localStorage.setItem(STORE_KEY, JSON.stringify(products)); }catch(e){}
       }
     });
   }
 
   /* ── render products ── */
-  var track = document.getElementById('productTrack');
+  var track    = document.getElementById('productTrack');   // home carousel (may be absent)
+  var preGrid  = document.getElementById('preorderGrid');   // preorder page (may be absent)
   function money(n){ return Number(n).toLocaleString('en-US') + ' AZN'; }
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 
-  function renderProducts(){
-    if(!products.length){ track.innerHTML = '<p style="color:var(--dim);padding:2rem;">No products yet. Add some in the Admin panel.</p>'; return; }
-    track.innerHTML = products.map(function(p){
-      var sold = p.badge && p.badge.toLowerCase().indexOf('sold')>-1;
-      return '<article class="card'+(sold?' sold':'')+'">'+
-        '<div class="card-frame">'+
-          (p.badge ? '<span class="card-badge'+(sold?' sold':'')+'">'+esc(p.badge)+'</span>' : '')+
-          '<img src="'+esc(p.img)+'" alt="'+esc(p.name)+'" loading="lazy">'+
-          '<button class="wish" aria-label="Wishlist"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.3-9.3-8.5C1 9 2.5 5.5 6 5.5c2 0 3.2 1.3 4 2.5.8-1.2 2-2.5 4-2.5 3.5 0 5 3.5 3.3 7C19 16.7 12 21 12 21Z"/></svg></button>'+
-          (sold?'':'<button class="quick-add" data-id="'+esc(p.id)+'">Add to Cart</button>')+
-        '</div>'+
-        '<div class="card-brand">'+esc(p.brand||'')+'</div>'+
-        '<div class="card-name">'+esc(p.name)+'</div>'+
-        '<div class="card-price">'+money(p.price)+'</div>'+
-      '</article>';
-    }).join('');
+  /* one card markup, shared by the home carousel and the preorder page */
+  function cardHTML(p){
+    var sold = p.badge && p.badge.toLowerCase().indexOf('sold')>-1;
+    var pre  = !!p.is_preorder;
+    var badge = pre ? 'Preorder' : (p.badge||'');   // PREORDER reuses the badge style
+    return '<article class="card'+(sold?' sold':'')+(pre?' preorder':'')+'">'+
+      '<div class="card-frame">'+
+        (badge ? '<span class="card-badge'+(sold?' sold':'')+'">'+esc(badge)+'</span>' : '')+
+        '<img src="'+esc(p.img)+'" alt="'+esc(p.name)+'" loading="lazy">'+
+        '<button class="wish" aria-label="Wishlist"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.3-9.3-8.5C1 9 2.5 5.5 6 5.5c2 0 3.2 1.3 4 2.5.8-1.2 2-2.5 4-2.5 3.5 0 5 3.5 3.3 7C19 16.7 12 21 12 21Z"/></svg></button>'+
+        (sold?'':'<button class="quick-add" data-id="'+esc(p.id)+'">Add to Cart</button>')+
+      '</div>'+
+      '<div class="card-brand">'+esc(p.brand||'')+'</div>'+
+      '<div class="card-name">'+esc(p.name)+'</div>'+
+      '<div class="card-price">'+money(p.price)+'</div>'+
+      ((pre && p.preorder_delivery) ? '<div class="card-pre">Delivery: '+esc(p.preorder_delivery)+'</div>' : '')+
+    '</article>';
   }
+
+  function renderProducts(){
+    if(!track) return;
+    if(!products.length){ track.innerHTML = '<p style="color:var(--dim);padding:2rem;">No products yet. Add some in the Admin panel.</p>'; return; }
+    track.innerHTML = products.map(cardHTML).join('');
+  }
+
+  function renderPreorders(){
+    if(!preGrid) return;
+    var list = products.filter(function(p){ return !!p.is_preorder; });
+    if(!list.length){ preGrid.innerHTML = '<p class="empty-note">No preorders right now.</p>'; return; }
+    preGrid.innerHTML = list.map(cardHTML).join('');
+  }
+
   renderProducts();
+  renderPreorders();
   fetchProducts();
 
-  /* wishlist toggle + add to cart (delegated) */
-  track.addEventListener('click', function(e){
+  /* wishlist toggle + add to cart (delegated) — shared by both containers */
+  function cardClick(e){
     var w = e.target.closest('.wish');
     if(w){ w.classList.toggle('active'); return; }
     var a = e.target.closest('.quick-add');
     if(a){ addToCart(a.getAttribute('data-id')); }
-  });
+  }
+  if(track)   track.addEventListener('click', cardClick);
+  if(preGrid) preGrid.addEventListener('click', cardClick);
 
   /* ── cart ── */
   var cart = {};
@@ -106,6 +125,7 @@
           '<div class="ci-brand">'+esc(p.brand||'')+'</div>'+
           '<div class="ci-name">'+esc(p.name)+'</div>'+
           '<div class="ci-price">'+money(p.price)+'</div>'+
+          (p.is_preorder ? '<div class="ci-pre">Preorder'+(p.preorder_delivery?' · '+esc(p.preorder_delivery):'')+'</div>' : '')+
           '<div class="ci-qty"><button data-dec="'+esc(id)+'">−</button><span>'+q+'</span><button data-inc="'+esc(id)+'">+</button>'+
           '<button class="ci-remove" data-rem="'+esc(id)+'">Remove</button></div>'+
         '</div></div>';
@@ -136,31 +156,37 @@
     if(!ids.length){ showToast('Your cart is empty'); return; }
     var total=0;
     var lines = ids.map(function(id){ var p=findP(id),q=cart[id]; total+=p.price*q;
-      return '• '+p.name+' ('+p.brand+') ×'+q+' — '+money(p.price*q); });
+      var tag = p.is_preorder ? ' [Preorder'+(p.preorder_delivery?': '+p.preorder_delivery:'')+']' : '';
+      return '• '+p.name+' ('+p.brand+') ×'+q+' — '+money(p.price*q)+tag; });
     var msg = 'Hello Jasmine Concept! I would like to order:\n\n'+lines.join('\n')+'\n\nTotal: '+money(total);
     window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(msg), '_blank');
   });
 
-  /* carousel arrows */
-  function scrollAmt(){ var c=track.querySelector('.card'); return c? c.getBoundingClientRect().width+22 : 260; }
-  document.getElementById('prevBtn').addEventListener('click', function(){ track.scrollBy({left:-scrollAmt()*2,behavior:'smooth'}); });
-  document.getElementById('nextBtn').addEventListener('click', function(){ track.scrollBy({left:scrollAmt()*2,behavior:'smooth'}); });
+  /* carousel arrows (home only — absent on the preorder page) */
+  var prevBtn=document.getElementById('prevBtn'), nextBtn=document.getElementById('nextBtn');
+  if(track && prevBtn && nextBtn){
+    var scrollAmt=function(){ var c=track.querySelector('.card'); return c? c.getBoundingClientRect().width+22 : 260; };
+    prevBtn.addEventListener('click', function(){ track.scrollBy({left:-scrollAmt()*2,behavior:'smooth'}); });
+    nextBtn.addEventListener('click', function(){ track.scrollBy({left:scrollAmt()*2,behavior:'smooth'}); });
+  }
 
   /* mobile menu */
   var mm=document.getElementById('mobileMenu');
-  document.getElementById('menuBtn').addEventListener('click', function(){ mm.classList.add('open'); });
-  document.getElementById('mmClose').addEventListener('click', function(){ mm.classList.remove('open'); });
-  mm.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ mm.classList.remove('open'); }); });
+  var menuBtn=document.getElementById('menuBtn'), mmClose=document.getElementById('mmClose');
+  if(mm && menuBtn){ menuBtn.addEventListener('click', function(){ mm.classList.add('open'); }); }
+  if(mm && mmClose){ mmClose.addEventListener('click', function(){ mm.classList.remove('open'); }); }
+  if(mm){ mm.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ mm.classList.remove('open'); }); }); }
 
   /* newsletter */
-  document.getElementById('nlForm').addEventListener('submit', function(e){ e.preventDefault(); this.reset(); showToast('Thank you for subscribing ◆'); });
+  var nlForm=document.getElementById('nlForm');
+  if(nlForm){ nlForm.addEventListener('submit', function(e){ e.preventDefault(); this.reset(); showToast('Thank you for subscribing ◆'); }); }
 
   /* toast */
   var toast=document.getElementById('toast'), tTimer;
   function showToast(msg){ toast.textContent=msg; toast.classList.add('show'); clearTimeout(tTimer); tTimer=setTimeout(function(){ toast.classList.remove('show'); },2600); }
 
   /* re-render if admin changes catalogue in another tab */
-  window.addEventListener('storage', function(e){ if(e.key===STORE_KEY){ products=load(); renderProducts(); renderCart(); } });
+  window.addEventListener('storage', function(e){ if(e.key===STORE_KEY){ products=load(); renderProducts(); renderPreorders(); renderCart(); } });
 })();
 
 

@@ -58,6 +58,9 @@
   }
   input:focus, select:focus{ border-color:var(--dim); }
   .row2{ display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+  .check-row{ display:flex; align-items:center; gap:.55rem; text-transform:none; letter-spacing:0; font-size:.85rem; color:var(--ink); cursor:pointer; }
+  .check-row input[type=checkbox]{ width:auto; margin:0; }
+  .pcard .tag.pre{ background:var(--french); top:auto; bottom:.5rem; }
 
   .drop{ border:1px dashed var(--french); background:#fff; padding:1.2rem; text-align:center; cursor:pointer; transition:border-color .3s, background .3s; }
   .drop:hover{ border-color:var(--dim); background:var(--seasalt); }
@@ -182,6 +185,13 @@
             <option value="">None</option>
             <option value="Sold Out">Sold Out</option>
           </select>
+
+          <label class="check-row" for="ppreorder">
+            <input type="checkbox" id="ppreorder" />
+            <span>Preorder item</span>
+          </label>
+          <label for="ppredelivery">Delivery estimate <small>(shown on preorder items)</small></label>
+          <input type="text" id="ppredelivery" placeholder="e.g. 10–15 gün · or an exact date" />
 
           <label>Product Image</label>
           <div class="drop" id="drop">
@@ -310,7 +320,8 @@
   /* ── form ── */
   var form=document.getElementById('pform');
   var fields={ id:document.getElementById('pid'), name:document.getElementById('pname'), brand:document.getElementById('pbrand'),
-    price:document.getElementById('pprice'), cat:document.getElementById('pcat'), badge:document.getElementById('pbadge') };
+    price:document.getElementById('pprice'), cat:document.getElementById('pcat'), badge:document.getElementById('pbadge'),
+    preorder:document.getElementById('ppreorder'), predelivery:document.getElementById('ppredelivery') };
 
   function resetForm(){
     form.reset(); fields.id.value=''; imgData=''; imgIsFile=false; showPreview('');
@@ -327,7 +338,9 @@
     var ready = imgIsFile ? uploadImage(imgData) : Promise.resolve(imgData);
     ready.then(function(imgUrl){
       var row={ name:fields.name.value.trim(), brand:fields.brand.value.trim(),
-        price:Number(fields.price.value)||0, category:fields.cat.value, badge:fields.badge.value, img:imgUrl };
+        price:Number(fields.price.value)||0, category:fields.cat.value, badge:fields.badge.value, img:imgUrl,
+        is_preorder:fields.preorder.checked,
+        preorder_delivery:fields.preorder.checked ? (fields.predelivery.value.trim()||null) : null };
       if(fields.id.value){
         return sb.from('products').update(row).eq('id', fields.id.value);
       }
@@ -359,7 +372,7 @@
     if(!list.length){ plist.innerHTML='<div class="empty">'+(products.length?'No matches.':'No products yet — add your first on the left.')+'</div>'; return; }
     plist.innerHTML=list.map(function(p){
       return '<div class="pcard">'+
-        '<div class="ph">'+(p.badge?'<span class="tag">'+esc(p.badge)+'</span>':'')+'<img src="'+esc(p.img)+'" alt=""></div>'+
+        '<div class="ph">'+(p.badge?'<span class="tag">'+esc(p.badge)+'</span>':'')+(p.is_preorder?'<span class="tag pre">Preorder</span>':'')+'<img src="'+esc(p.img)+'" alt=""></div>'+
         '<div class="body"><div class="b">'+esc(p.brand)+' · '+esc(p.category)+'</div>'+
         '<div class="n">'+esc(p.name)+'</div><div class="pr">'+money(p.price)+'</div></div>'+
         '<div class="ops"><button data-edit="'+esc(p.id)+'">Edit</button><button class="del" data-del="'+esc(p.id)+'">Delete</button></div>'+
@@ -373,7 +386,9 @@
     if(ed){
       var p=products.find(function(x){ return String(x.id)===ed; }); if(!p) return;
       fields.id.value=p.id; fields.name.value=p.name; fields.brand.value=p.brand; fields.price.value=p.price;
-      fields.cat.value=p.category||'Beauty'; fields.badge.value=p.badge||''; imgData=p.img; imgIsFile=false; showPreview(p.img);
+      fields.cat.value=p.category||'Beauty'; fields.badge.value=p.badge||'';
+      fields.preorder.checked=!!p.is_preorder; fields.predelivery.value=p.preorder_delivery||'';
+      imgData=p.img; imgIsFile=false; showPreview(p.img);
       purl.value=(String(p.img).indexOf('data:')===0)?'':p.img;
       document.getElementById('formMode').textContent='Editing';
       document.getElementById('saveBtn').textContent='Save Changes';
