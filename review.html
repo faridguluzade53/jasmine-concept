@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Share Your Experience — Jasmine Concept</title>
+<meta name="description" content="Tell us how your experience ordering from Jasmine Concept was." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80' font-family='serif' fill='%23696E71'>JC</text></svg>" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<script>(function(){try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-motion');}catch(e){}})();</script>
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/animations.css" />
+
+<style>
+  /* review page — reuses the site's tokens (--panel, --button, --text …) and font */
+  .rv-page{ min-height:100vh; display:flex; flex-direction:column; }
+  .rv-top{ padding:1.6rem 0; border-bottom:1px solid var(--border); }
+  .rv-top .logo{ justify-content:center; display:flex; }
+  .rv-top .logo .name{
+    font-family:'Cormorant Garamond',serif; letter-spacing:.34em;
+    text-transform:uppercase; font-size:.95rem; color:var(--text);
+  }
+
+  .rv-main{ flex:1; display:grid; place-items:center; padding:clamp(2.5rem,7vw,5rem) 0; }
+  .rv-card{ width:min(500px,92vw); text-align:center; }
+
+  .rv-eyebrow{ display:flex; align-items:center; justify-content:center; gap:.85rem; margin-bottom:1.5rem; }
+  .rv-eyebrow .orn-line{ width:44px; height:1px; background:var(--muted); opacity:.7; }
+  .rv-eyebrow .diamond{ color:var(--muted); font-size:.55rem; }
+
+  .rv-card h1{
+    font-family:'Cormorant Garamond',serif; font-weight:500;
+    font-size:clamp(2rem,6vw,2.9rem); letter-spacing:.02em; line-height:1.1; color:var(--text);
+  }
+  .rv-card .rv-sub{ color:var(--muted); font-size:.98rem; margin:1rem auto 0; max-width:38ch; }
+
+  .rv-form{ margin-top:2.6rem; text-align:left; }
+  .rv-form label{
+    display:block; font-size:.66rem; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:.55rem;
+  }
+  .rv-form input[type=text]{
+    width:100%; padding:.85rem 1rem; border:1px solid var(--border); background:#fff;
+    font-family:inherit; font-size:.95rem; color:var(--text); outline:none; transition:border-color .3s var(--ease);
+  }
+  .rv-form input[type=text]:focus{ border-color:var(--button); }
+
+  .rv-stars-wrap{ margin-top:1.6rem; }
+  .rv-stars{ display:flex; gap:.35rem; }
+  .rv-stars button{
+    background:none; border:none; cursor:pointer; padding:.15rem; line-height:0;
+    color:var(--border); transition:color .18s var(--ease), transform .18s var(--ease);
+  }
+  .rv-stars button svg{ width:38px; height:38px; display:block; }
+  .rv-stars button:hover{ transform:translateY(-2px); }
+  .rv-stars button.on{ color:#d9a441; }          /* gold fill for selected/hovered */
+  .rv-stars button:focus-visible{ outline:2px solid var(--button); outline-offset:2px; }
+  .rv-rating-note{ font-size:.78rem; color:var(--muted); margin-top:.6rem; min-height:1.1em; }
+
+  .rv-submit{
+    width:100%; margin-top:2rem; padding:1rem; background:var(--button); color:#fff; border:none;
+    cursor:pointer; font-family:inherit; font-size:.72rem; letter-spacing:.2em; text-transform:uppercase;
+    transition:opacity .3s, transform .25s var(--ease), box-shadow .3s;
+  }
+  .rv-submit:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 12px 26px rgba(58,58,58,.22); }
+  .rv-submit:disabled{ opacity:.4; cursor:default; }
+
+  .rv-err{ color:#b5443e; font-size:.82rem; margin-top:1rem; min-height:1.1em; text-align:center; }
+
+  .rv-thanks{ display:none; }
+  .rv-thanks .tick{
+    width:64px; height:64px; margin:0 auto 1.4rem; border-radius:50%;
+    display:grid; place-items:center; background:var(--panel); color:#fff;
+  }
+  .rv-thanks .tick svg{ width:30px; height:30px; }
+  .rv-thanks h2{ font-family:'Cormorant Garamond',serif; font-weight:500; font-size:1.9rem; color:var(--text); }
+  .rv-thanks p{ color:var(--muted); margin-top:.8rem; }
+
+  .rv-foot{ text-align:center; padding:1.6rem 0; border-top:1px solid var(--border); font-size:.72rem; color:var(--muted); letter-spacing:.06em; }
+</style>
+</head>
+<body>
+
+  <div class="rv-page">
+    <header class="rv-top">
+      <div class="wrap">
+        <a href="index.html" class="logo" aria-label="Jasmine Concept home">
+          <span class="name">Jasmine Concept</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="rv-main">
+      <div class="wrap">
+        <div class="rv-card">
+
+          <!-- form -->
+          <div id="rvFormWrap">
+            <div class="rv-eyebrow"><span class="orn-line"></span><span class="diamond">◆</span><span class="orn-line"></span></div>
+            <h1>How was your experience?</h1>
+            <p class="rv-sub">Thank you for ordering with us. Tell us how it all went — delivery, the products, and how we kept in touch.</p>
+
+            <form class="rv-form" id="rvForm" novalidate>
+              <div>
+                <label for="rvName">Your name</label>
+                <input type="text" id="rvName" maxlength="80" autocomplete="name" placeholder="e.g. Leyla" required />
+              </div>
+
+              <div class="rv-stars-wrap">
+                <label id="rvStarsLabel">Your rating</label>
+                <div class="rv-stars" id="rvStars" role="radiogroup" aria-labelledby="rvStarsLabel"></div>
+                <div class="rv-rating-note" id="rvRatingNote"></div>
+              </div>
+
+              <button type="submit" class="rv-submit" id="rvSubmit" disabled>Submit Review</button>
+              <div class="rv-err" id="rvErr"></div>
+            </form>
+          </div>
+
+          <!-- thank-you -->
+          <div class="rv-thanks" id="rvThanks">
+            <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 13l4 4L19 7"/></svg></div>
+            <h2>Thank you ◆</h2>
+            <p>We truly appreciate you taking the time. It means a lot to us.</p>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="rv-foot">© 2026 Jasmine Concept. All rights reserved.</footer>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  /* same project as the rest of the site */
+  var SUPABASE_URL  = 'https://mmahlwopdblmcpdeaeml.supabase.co';
+  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tYWhsd29wZGJsbWNwZGVhZW1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0OTg3NzUsImV4cCI6MjA5ODA3NDc3NX0.ENf-NcCt9JCN71_rqmL2jKSZBCw8S9r5mpvK9j3yYTo';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  var STAR = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 21.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9L12 2.5z"/></svg>';
+  var LABELS = ['','Poor','Fair','Good','Very good','Excellent'];
+
+  var nameEl = document.getElementById('rvName');
+  var starsEl = document.getElementById('rvStars');
+  var noteEl = document.getElementById('rvRatingNote');
+  var submitEl = document.getElementById('rvSubmit');
+  var errEl = document.getElementById('rvErr');
+  var rating = 0;
+
+  /* build the 5 star buttons */
+  var btns = [];
+  for(var i=1;i<=5;i++){
+    (function(val){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('role','radio');
+      b.setAttribute('aria-checked','false');
+      b.setAttribute('aria-label', val + ' star' + (val>1?'s':''));
+      b.innerHTML = STAR;
+      b.addEventListener('click', function(){ setRating(val); });
+      b.addEventListener('mouseenter', function(){ paint(val); });
+      starsEl.appendChild(b);
+      btns.push(b);
+    })(i);
+  }
+  starsEl.addEventListener('mouseleave', function(){ paint(rating); });
+
+  function paint(n){ btns.forEach(function(b,idx){ b.classList.toggle('on', idx < n); }); }
+  function setRating(n){
+    rating = n;
+    paint(n);
+    btns.forEach(function(b,idx){ b.setAttribute('aria-checked', (idx+1)===n ? 'true':'false'); });
+    noteEl.textContent = LABELS[n];
+    validate();
+  }
+  function validate(){ submitEl.disabled = !(nameEl.value.trim().length > 0 && rating >= 1 && rating <= 5); }
+  nameEl.addEventListener('input', validate);
+
+  document.getElementById('rvForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    errEl.textContent = '';
+    var name = nameEl.value.trim();
+    if(!name || rating < 1){ validate(); return; }
+
+    submitEl.disabled = true; submitEl.textContent = 'Sending…';
+    sb.from('reviews').insert({ name: name, rating: rating }).then(function(res){
+      if(res.error){
+        submitEl.disabled = false; submitEl.textContent = 'Submit Review';
+        errEl.textContent = 'Something went wrong — please try again.';
+        console.error(res.error); return;
+      }
+      document.getElementById('rvFormWrap').style.display = 'none';
+      document.getElementById('rvThanks').style.display = 'block';
+    });
+  });
+})();
+</script>
+</body>
+</html>

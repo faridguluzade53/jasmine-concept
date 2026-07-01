@@ -85,6 +85,38 @@
   renderPreorders();
   fetchProducts();
 
+  /* ── what our clients say (approved reviews only) ── */
+  var reviewsSec = document.getElementById('reviews');   // home only (hidden until data)
+  function starMarkup(r){
+    r = Math.max(0, Math.min(5, Math.round(Number(r)||0)));
+    var on=''; for(var i=0;i<r;i++)   on+='★';
+    var off=''; for(var j=r;j<5;j++)  off+='☆';
+    return '<span class="on">'+on+'</span><span class="off">'+off+'</span>';
+  }
+  function renderReviews(rows){
+    if(!reviewsSec) return;
+    if(!rows || !rows.length){ reviewsSec.hidden = true; return; }   // zero approved → render nothing
+    var count = rows.length;
+    var avg = rows.reduce(function(s,r){ return s + (Number(r.rating)||0); }, 0) / count;
+    document.getElementById('reviewsAgg').innerHTML =
+      '<span class="score">'+avg.toFixed(1)+'</span><span class="star">★</span>'+
+      '<span class="dot">·</span><span class="count">'+count+' review'+(count!==1?'s':'')+'</span>';
+    document.getElementById('reviewsCards').innerHTML = rows.slice(0,6).map(function(r){
+      return '<div class="rv-quote-card"><span class="who">'+esc(r.name)+'</span>'+
+        '<span class="dash">—</span><span class="stars">'+starMarkup(r.rating)+'</span></div>';
+    }).join('');
+    reviewsSec.hidden = false;
+  }
+  function fetchReviews(){
+    if(!sb) return;
+    sb.from('reviews').select('name,rating,created_at').eq('approved', true)
+      .order('created_at',{ascending:false}).then(function(res){
+        if(res.error){ console.warn('Reviews:', res.error.message); return; }
+        renderReviews(res.data||[]);
+      });
+  }
+  fetchReviews();
+
   /* wishlist toggle + add to cart (delegated) — shared by both containers */
   function cardClick(e){
     var w = e.target.closest('.wish');
