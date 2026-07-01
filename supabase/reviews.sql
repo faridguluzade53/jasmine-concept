@@ -12,20 +12,27 @@ create table if not exists public.reviews (
   id         bigint generated always as identity primary key,
   name       text        not null,
   rating     int         not null check (rating between 1 and 5),
+  suggestion text,        -- optional; PRIVATE — admin-only, never shown publicly
   approved   boolean     not null default false,
   created_at timestamptz not null default now()
 );
 
--- Bring an existing reviews table (pre-approval version) up to date.
+-- Bring an existing reviews table up to date.
 alter table public.reviews
-  add column if not exists approved boolean not null default false;
+  add column if not exists approved boolean not null default false,
+  add column if not exists suggestion text;
 
 -- 2. Table privileges ------------------------------------------------------
 -- RLS decides WHICH rows a role may touch, but the role still needs the base
 -- table privilege first. This project does not auto-grant on new tables.
---   • anon           → INSERT (submit) + SELECT (read; RLS limits to approved)
---   • authenticated  → INSERT + SELECT + UPDATE + DELETE (admin moderation)
-grant insert, select on public.reviews to anon;
+--   • anon           → INSERT (submit) + column-limited SELECT (read; RLS limits
+--                      to approved rows). SELECT is granted ONLY on the public
+--                      columns, so the private `suggestion` column is unreadable
+--                      by the anon key even via a raw API call.
+--   • authenticated  → INSERT + SELECT (all cols, incl. suggestion) + UPDATE + DELETE
+grant insert on public.reviews to anon;
+revoke select on public.reviews from anon;
+grant  select (id, name, rating, approved, created_at) on public.reviews to anon;
 grant insert, select, update, delete on public.reviews to authenticated;
 
 -- 3. RLS -------------------------------------------------------------------

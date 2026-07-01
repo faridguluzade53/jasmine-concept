@@ -43,11 +43,15 @@
     display:block; font-size:.66rem; letter-spacing:.16em; text-transform:uppercase;
     color:var(--muted); margin-bottom:.55rem;
   }
-  .rv-form input[type=text]{
+  .rv-form input[type=text],
+  .rv-form textarea{
     width:100%; padding:.85rem 1rem; border:1px solid var(--border); background:#fff;
     font-family:inherit; font-size:.95rem; color:var(--text); outline:none; transition:border-color .3s var(--ease);
   }
-  .rv-form input[type=text]:focus{ border-color:var(--button); }
+  .rv-form input[type=text]:focus,
+  .rv-form textarea:focus{ border-color:var(--button); }
+  .rv-form textarea{ resize:vertical; min-height:96px; line-height:1.5; }
+  .rv-suggest-wrap{ margin-top:1.6rem; }
 
   .rv-stars-wrap{ margin-top:1.6rem; }
   .rv-stars{ display:flex; gap:.35rem; }
@@ -117,6 +121,11 @@
                 <div class="rv-rating-note" id="rvRatingNote"></div>
               </div>
 
+              <div class="rv-suggest-wrap">
+                <label for="rvSuggest">Suggestions <span style="text-transform:none;letter-spacing:0;opacity:.7;">(optional)</span></label>
+                <textarea id="rvSuggest" maxlength="1000" rows="4" placeholder="Anything we could do better? (optional)"></textarea>
+              </div>
+
               <button type="submit" class="rv-submit" id="rvSubmit" disabled>Submit Review</button>
               <div class="rv-err" id="rvErr"></div>
             </form>
@@ -151,6 +160,7 @@
   var LABELS = ['','Poor','Fair','Good','Very good','Excellent'];
 
   var nameEl = document.getElementById('rvName');
+  var suggestEl = document.getElementById('rvSuggest');
   var starsEl = document.getElementById('rvStars');
   var noteEl = document.getElementById('rvRatingNote');
   var submitEl = document.getElementById('rvSubmit');
@@ -192,8 +202,10 @@
     var name = nameEl.value.trim();
     if(!name || rating < 1){ validate(); return; }
 
+    var suggestion = suggestEl.value.trim() || null;   // optional — null when blank
+
     submitEl.disabled = true; submitEl.textContent = 'Sending…';
-    sb.from('reviews').insert({ name: name, rating: rating }).then(function(res){
+    sb.from('reviews').insert({ name: name, rating: rating, suggestion: suggestion }).then(function(res){
       if(res.error){
         submitEl.disabled = false; submitEl.textContent = 'Submit Review';
         errEl.textContent = 'Something went wrong — please try again.';

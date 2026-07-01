@@ -98,8 +98,11 @@
   /* ── reviews ── */
   .rv-panel{ margin-top:2rem; }
   .rv-hint{ font-size:.78rem; color:var(--dim); margin:-.6rem 0 1.2rem; }
-  .rv-row{ display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.85rem 0; border-bottom:1px solid var(--platinum); }
+  .rv-row{ padding:.85rem 0; border-bottom:1px solid var(--platinum); }
   .rv-row:last-child{ border-bottom:none; }
+  .rv-top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .rv-suggest{ margin-top:.6rem; font-size:.82rem; color:var(--ink-soft); line-height:1.5; white-space:pre-wrap; background:var(--seasalt); border-left:2px solid var(--french); padding:.55rem .8rem; }
+  .rv-suggest .lbl{ display:block; font-size:.56rem; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); margin-bottom:.25rem; }
   .rv-row .who{ font-size:.95rem; color:var(--ink); }
   .rv-row .meta{ display:flex; align-items:center; gap:1rem; }
   .rv-row .stars{ color:#d9a441; letter-spacing:.12em; font-size:.95rem; white-space:nowrap; }
@@ -114,7 +117,7 @@
   .rv-row .ops .del:hover{ background:var(--danger); color:#fff; border-color:var(--danger); }
   .rv-row .ops button:disabled{ opacity:.5; cursor:default; }
   .rv-empty{ text-align:center; padding:2rem; color:var(--dim); font-size:.9rem; }
-  @media(max-width:600px){ .rv-row{ flex-direction:column; align-items:flex-start; } .rv-row .meta{ flex-wrap:wrap; } .rv-row .date{ text-align:left; min-width:0; } }
+  @media(max-width:600px){ .rv-top{ flex-direction:column; align-items:flex-start; } .rv-row .meta{ flex-wrap:wrap; } .rv-row .date{ text-align:left; min-width:0; } }
 
   .toast{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(140%); background:var(--ink); color:#fff; padding:.85rem 1.5rem; font-size:.76rem; letter-spacing:.08em; z-index:60; transition:transform .4s var(--ease); }
   .toast.show{ transform:translateX(-50%) translateY(0); }
@@ -455,17 +458,21 @@
       if(!rows.length){ rvList.innerHTML='<div class="rv-empty">No reviews yet.</div>'; return; }
       rvList.innerHTML=rows.map(function(r){
         var on=!!r.approved;
+        var sug=(r.suggestion==null?'':String(r.suggestion).trim());
         return '<div class="rv-row">'+
-          '<span class="who">'+esc(r.name)+
-            '<span class="badge '+(on?'on':'pending')+'">'+(on?'Approved':'Pending')+'</span></span>'+
-          '<span class="meta">'+
-            '<span class="stars" title="'+esc(r.rating)+'/5">'+stars(r.rating)+'</span>'+
-            '<span class="date">'+esc(fmtDate(r.created_at))+'</span>'+
-            '<span class="ops">'+
-              '<button class="appr" data-appr="'+esc(r.id)+'" data-to="'+(on?'0':'1')+'">'+(on?'Unapprove':'Approve')+'</button>'+
-              '<button class="del" data-del="'+esc(r.id)+'">Delete</button>'+
+          '<div class="rv-top">'+
+            '<span class="who">'+esc(r.name)+
+              '<span class="badge '+(on?'on':'pending')+'">'+(on?'Approved':'Pending')+'</span></span>'+
+            '<span class="meta">'+
+              '<span class="stars" title="'+esc(r.rating)+'/5">'+stars(r.rating)+'</span>'+
+              '<span class="date">'+esc(fmtDate(r.created_at))+'</span>'+
+              '<span class="ops">'+
+                '<button class="appr" data-appr="'+esc(r.id)+'" data-to="'+(on?'0':'1')+'">'+(on?'Unapprove':'Approve')+'</button>'+
+                '<button class="del" data-del="'+esc(r.id)+'">Delete</button>'+
+              '</span>'+
             '</span>'+
-          '</span>'+
+          '</div>'+
+          (sug ? '<div class="rv-suggest"><span class="lbl">Suggestion</span>'+esc(sug)+'</div>' : '')+
         '</div>';
       }).join('');
     });
